@@ -14,8 +14,8 @@
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="people.html">Researchers</a></li>
-                <li><a href="chat.html">Chat with Rhett</a></li>
                 <li><a href="projects.html" class="active">Projects</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
             </ul>
         </div>
     </nav>
@@ -36,11 +36,42 @@
                     <label for="project-topic-filter">Topic</label>
                     <select id="project-topic-filter">
                         <option value="">All Topics</option>
-                        <option value="llm">Large Language Models</option>
-                        <option value="vision">Computer Vision</option>
-                        <option value="robotics">Robotics</option>
-                        <option value="ethics">AI Ethics</option>
-                        <option value="healthcare">Healthcare AI</option>
+                        <option value="african-american-studies">African American Studies</option>
+                        <option value="american-studies">American Studies</option>
+                        <option value="anatomy">Anatomy</option>
+                        <option value="artificial-intelligence">Artificial Intelligence</option>
+                        <option value="biochemistry">Biochemistry</option>
+                        <option value="biology">Biology</option>
+                        <option value="biomedical">Biomedical</option>
+                        <option value="business">Business</option>
+                        <option value="communications">Communications</option>
+                        <option value="computer-science">Computer Science</option>
+                        <option value="data-sciences">Data Sciences</option>
+                        <option value="economics">Economics</option>
+                        <option value="education">Education</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="health">Health</option>
+                        <option value="higher-education">Higher Education</option>
+                        <option value="history">History</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="humanities">Humanities</option>
+                        <option value="immunology">Immunology</option>
+                        <option value="japanese-language">Japanese Language</option>
+                        <option value="linguistics-language-sciences">Linguistics &amp; Language Sciences</option>
+                        <option value="literature">Literature</option>
+                        <option value="mathematics">Mathematics</option>
+                        <option value="medicine">Medicine</option>
+                        <option value="neuroscience">Neuroscience</option>
+                        <option value="ophthalmology">Ophthalmology</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="pharmacology">Pharmacology</option>
+                        <option value="physical-therapy">Physical Therapy</option>
+                        <option value="political-science">Political Science</option>
+                        <option value="psychology">Psychology</option>
+                        <option value="public-health">Public Health</option>
+                        <option value="social-science">Social Science</option>
+                        <option value="sociology">Sociology</option>
+                        <option value="speech-language-hearing-sciences">Speech, Language, and Hearing Sciences</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -49,17 +80,25 @@
                         <option value="">Any</option>
                         <option value="proposal">Proposal</option>
                         <option value="in-progress">In Progress</option>
+                        <option value="concluded">Concluded</option>
+                        <option value="finished">Finished</option>
                         <option value="published">Published</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="project-department-filter">Department</label>
-                    <select id="project-department-filter">
-                        <option value="">All Departments</option>
-                        <option value="cs">Computer Science</option>
-                        <option value="ee">Electrical Engineering</option>
-                        <option value="bio">Bioinformatics</option>
-                        <option value="biz">Business & Innovation</option>
+                    <label for="project-campus-filter">Location</label>
+                    <select id="project-campus-filter">
+                        <option value="">Any Location</option>
+                        <option value="on-campus">On Campus</option>
+                        <option value="off-campus">Off Campus</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-mode-filter">Delivery Mode</label>
+                    <select id="project-mode-filter">
+                        <option value="">Any Mode</option>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
                     </select>
                 </div>
                 <div class="filter-actions">
@@ -92,11 +131,17 @@
                             <textarea id="project-summary" rows="4" placeholder="Brief description of goals and impact"></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="project-funding">Estimated Funding Needed (USD)</label>
+                            <input type="number" id="project-funding" placeholder="e.g., 5000" min="0" step="100">
+                        </div>
+                        <div class="form-group">
                             <label for="project-stage">Stage</label>
                             <select id="project-stage">
                                 <option value="proposal">Proposal</option>
                                 <option value="in-progress">In Progress</option>
                                 <option value="pilot">Pilot Study</option>
+                                <option value="concluded">Concluded</option>
+                                <option value="finished">Finished</option>
                                 <option value="published">Published</option>
                             </select>
                         </div>
