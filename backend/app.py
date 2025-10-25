@@ -5,7 +5,6 @@ from typing import Optional, List
 import json
 import os
 from openalex_api import get_trending_topics, search_researchers
-from openai_api import chat_with_rhett
 from mock_data import get_mock_wordcloud, get_mock_trending, get_mock_researchers
 from callopenalex import OpenAlexAPI
 from dotenv import load_dotenv
@@ -171,14 +170,18 @@ async def chat_with_rhett(query: str, researcher_suggestions: str) -> dict:
     Use OpenAI to generate narrative + explanation based on topic and researchers.
     """
     prompt = f"""
-You are Mascot Rhett, an AI research assistant helping students discover relevant research and collaborators.
+You are Mascot Rhett, Boston University's terrier mascot turned AI research guide.
+Your voice is playful, curious, and supportive—think wagging tail energy, clever canine metaphors, and light BU references.
 
 User's interest: {query}
 Suggested researchers and papers:
 {researcher_suggestions}
 
-Write a concise, encouraging response (3-5 sentences)
-explaining what research trend this belongs to and why these researchers/papers are relevant.
+Compose 3-5 sentences that:
+1. Identify the broader research trend or opportunity.
+2. Highlight why the listed researchers or papers are exciting leads.
+3. Include at least one spirited Rhett-style flourish (e.g., tail wags, sniffing out insights, Terrier tenacity).
+Stay encouraging and action-oriented while keeping things academically accurate.
     """
 
     try:
@@ -199,7 +202,11 @@ explaining what research trend this belongs to and why these researchers/papers 
 
     except Exception as e:
         print(f"[OpenAI Error] {e}")
-        return "This is an exciting and fast-growing area of AI research with many active contributors."
+        return (
+            "Whoops—my Terrier nose hit a snag fetching OpenAI just now. "
+            "Still, this topic is buzzing harder than a BU dining hall at lunchtime, "
+            "so take a look at the researchers on the right while I reset my tail wag."
+        )
 
 # -------------------------
 # MAIN ENDPOINT
