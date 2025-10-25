@@ -303,6 +303,9 @@ function handleSort() {
 }
 
 // ===== CHAT PAGE (Mascot Rhett) =====
+let chatHistory = [];
+let isFirstMessage = true;
+
 export async function initChatPage() {
     console.log('Initializing chat page...');
 
@@ -311,16 +314,27 @@ export async function initChatPage() {
 
     sendBtn.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
     });
 
-    // Handle suggestion chips
-    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+    // Handle example question chips
+    document.querySelectorAll('.example-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             chatInput.value = chip.dataset.query;
             sendMessage();
         });
     });
+
+    // Handle close sidebar button
+    const closeSidebarBtn = document.getElementById('close-sidebar');
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', () => {
+            document.getElementById('researchers-sidebar').classList.remove('active');
+        });
+    }
 }
 
 async function sendMessage() {
@@ -329,7 +343,14 @@ async function sendMessage() {
 
     if (!query) return;
 
-    // Add user message to chat
+    // Transition from welcome screen to chat on first message
+    if (isFirstMessage) {
+        transitionToChat();
+        isFirstMessage = false;
+    }
+
+    // Add user message to chat history and UI
+    chatHistory.push({ type: 'user', text: query });
     addMessage(query, 'user');
     input.value = '';
 
@@ -348,18 +369,35 @@ async function sendMessage() {
         // Remove typing indicator
         removeTypingIndicator(typingId);
 
-        // Add bot response
+        // Add bot response to chat history and UI
+        chatHistory.push({ type: 'bot', text: response.summary, researchers: response.suggested_researchers });
         addMessage(response.summary, 'bot');
 
-        // Show suggested researchers
+        // Show suggested researchers in sidebar
         if (response.suggested_researchers && response.suggested_researchers.length > 0) {
             showSuggestedResearchers(response.suggested_researchers);
         }
     } catch (error) {
         console.error('Chat error:', error);
         removeTypingIndicator(typingId);
-        addMessage('Sorry, I encountered an error. Please try again later.', 'bot');
+        const errorMsg = 'Sorry, I encountered an error. Please try again later.';
+        chatHistory.push({ type: 'bot', text: errorMsg });
+        addMessage(errorMsg, 'bot');
     }
+}
+
+function transitionToChat() {
+    const welcomeContainer = document.getElementById('rhett-welcome');
+    const chatWrapper = document.getElementById('chat-wrapper');
+
+    // Fade out welcome screen
+    welcomeContainer.classList.add('fade-out');
+
+    // After animation, hide welcome and show chat
+    setTimeout(() => {
+        welcomeContainer.style.display = 'none';
+        chatWrapper.style.display = 'flex';
+    }, 300);
 }
 
 function addMessage(text, type) {
@@ -369,17 +407,19 @@ function addMessage(text, type) {
 
     if (type === 'bot') {
         messageDiv.innerHTML = `
-            <div class="message-avatar">🦊</div>
+            <div class="message-avatar">
+                <img src="assets/rhett-removebg-preview.png" alt="Rhett">
+            </div>
             <div class="message-content">
-                <p><strong>Rhett</strong></p>
-                <p>${text}</p>
+                <div class="message-sender">Rhett</div>
+                <div class="message-text">${text}</div>
             </div>
         `;
     } else {
         messageDiv.innerHTML = `
             <div class="message-content">
-                <p><strong>You</strong></p>
-                <p>${text}</p>
+                <div class="message-sender">You</div>
+                <div class="message-text">${text}</div>
             </div>
             <div class="message-avatar">👤</div>
         `;
@@ -396,7 +436,9 @@ function addTypingIndicator() {
     typingDiv.id = 'typing-' + Date.now();
 
     typingDiv.innerHTML = `
-        <div class="message-avatar">🦊</div>
+        <div class="message-avatar">
+            <img src="assets/rhett-removebg-preview.png" alt="Rhett">
+        </div>
         <div class="message-content">
             <div class="typing-dots">
                 <span></span><span></span><span></span>
@@ -418,22 +460,26 @@ function removeTypingIndicator(id) {
 }
 
 function showSuggestedResearchers(researchers) {
-    const panel = document.getElementById('suggestions-panel');
+    const sidebar = document.getElementById('researchers-sidebar');
     const container = document.getElementById('suggested-researchers');
 
     container.innerHTML = '';
 
     researchers.forEach(researcher => {
         const card = document.createElement('div');
-        card.className = 'suggested-researcher-card';
+        card.className = 'researcher-mini-card';
         card.innerHTML = `
             <h4>${researcher.name}</h4>
-            <p>${researcher.field}</p>
+            ${researcher.field ? `<p class="field">${researcher.field}</p>` : ''}
             ${researcher.affiliation ? `<p class="affiliation">${researcher.affiliation}</p>` : ''}
             <a href="${researcher.link}" target="_blank" class="btn btn-sm btn-primary">View Profile</a>
         `;
         container.appendChild(card);
     });
 
-    panel.style.display = 'block';
+    // Show sidebar with animation
+    sidebar.style.display = 'flex';
+    setTimeout(() => {
+        sidebar.classList.add('active');
+    }, 10);
 }
