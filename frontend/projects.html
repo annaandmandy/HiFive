@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Dashboard - Projects</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="projects.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">AI Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="people.html">Researchers</a></li>
+                <li><a href="projects.html" class="active">Projects</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="projects-container">
+        <section class="projects-header">
+            <div>
+                <h2>Explore University AI Projects</h2>
+                <p>Search ongoing initiatives, filter by focus area, or launch your own project.</p>
+            </div>
+            <div class="projects-search-bar">
+                <input type="text" id="project-search-input" placeholder="Search projects by title, topic, or leader">
+                <button class="btn btn-primary" id="project-search-btn">Search</button>
+                <button class="btn btn-secondary filter-toggle" id="project-filter-btn">Filters</button>
+            </div>
+            <div class="projects-filters" id="project-filters">
+                <div class="filter-group">
+                    <label for="project-topic-filter">Topic</label>
+                    <select id="project-topic-filter">
+                        <option value="">All Topics</option>
+                        <option value="african-american-studies">African American Studies</option>
+                        <option value="american-studies">American Studies</option>
+                        <option value="anatomy">Anatomy</option>
+                        <option value="artificial-intelligence">Artificial Intelligence</option>
+                        <option value="biochemistry">Biochemistry</option>
+                        <option value="biology">Biology</option>
+                        <option value="biomedical">Biomedical</option>
+                        <option value="business">Business</option>
+                        <option value="communications">Communications</option>
+                        <option value="computer-science">Computer Science</option>
+                        <option value="data-sciences">Data Sciences</option>
+                        <option value="economics">Economics</option>
+                        <option value="education">Education</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="health">Health</option>
+                        <option value="higher-education">Higher Education</option>
+                        <option value="history">History</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="humanities">Humanities</option>
+                        <option value="immunology">Immunology</option>
+                        <option value="japanese-language">Japanese Language</option>
+                        <option value="linguistics-language-sciences">Linguistics &amp; Language Sciences</option>
+                        <option value="literature">Literature</option>
+                        <option value="mathematics">Mathematics</option>
+                        <option value="medicine">Medicine</option>
+                        <option value="neuroscience">Neuroscience</option>
+                        <option value="ophthalmology">Ophthalmology</option>
+                        <option value="pediatrics">Pediatrics</option>
+                        <option value="pharmacology">Pharmacology</option>
+                        <option value="physical-therapy">Physical Therapy</option>
+                        <option value="political-science">Political Science</option>
+                        <option value="psychology">Psychology</option>
+                        <option value="public-health">Public Health</option>
+                        <option value="social-science">Social Science</option>
+                        <option value="sociology">Sociology</option>
+                        <option value="speech-language-hearing-sciences">Speech, Language, and Hearing Sciences</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-stage-filter">Project Stage</label>
+                    <select id="project-stage-filter">
+                        <option value="">Any</option>
+                        <option value="proposal">Proposal</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="concluded">Concluded</option>
+                        <option value="finished">Finished</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-campus-filter">Location</label>
+                    <select id="project-campus-filter">
+                        <option value="">Any Location</option>
+                        <option value="on-campus">On Campus</option>
+                        <option value="off-campus">Off Campus</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-mode-filter">Delivery Mode</label>
+                    <select id="project-mode-filter">
+                        <option value="">Any Mode</option>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" id="apply-filter-btn">Apply</button>
+                    <button class="btn btn-secondary" id="reset-filter-btn">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="projects-content">
+            <aside class="project-create-panel">
+                <div class="card create-card">
+                    <h3>Launch a New Project</h3>
+                    <p>Share your idea to find collaborators and resources.</p>
+                    <form id="project-create-form">
+                        <div class="form-group">
+                            <label for="project-title">Project Title</label>
+                            <input type="text" id="project-title" placeholder="Enter project name">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-lead">Project Lead</label>
+                            <input type="text" id="project-lead" placeholder="Lead researcher or student">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-topic">Primary Topic</label>
+                            <input type="text" id="project-topic" placeholder="e.g., AI Safety, NLP">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-summary">Project Summary</label>
+                            <textarea id="project-summary" rows="4" placeholder="Brief description of goals and impact"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-funding">Estimated Funding Needed (USD)</label>
+                            <input type="number" id="project-funding" placeholder="e.g., 5000" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-stage">Stage</label>
+                            <select id="project-stage">
+                                <option value="proposal">Proposal</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="pilot">Pilot Study</option>
+                                <option value="concluded">Concluded</option>
+                                <option value="finished">Finished</option>
+                                <option value="published">Published</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary full-width">Create Project</button>
+                    </form>
+                    <small class="create-hint">Submitting a project sends it to faculty moderators for review.</small>
+                </div>
+            </aside>
+
+            <section class="project-list-panel">
+                <div class="project-list-header">
+                    <h3>Active Projects <span class="count-badge" id="project-count">0</span></h3>
+                    <div class="sort-options">
+                        <label for="project-sort-select">Sort by:</label>
+                        <select id="project-sort-select">
+                            <option value="updated">Recently Updated</option>
+                            <option value="title">Title</option>
+                            <option value="members">Team Size</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="project-loading" class="loading">Loading projects...</div>
+                <div id="project-grid" class="project-grid"></div>
+                <div id="project-empty" class="no-results" style="display: none;">
+                    <p>No projects match your filters. Try adjusting your search or start a new project.</p>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
