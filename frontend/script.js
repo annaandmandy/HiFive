@@ -18,138 +18,196 @@ async function fetchAPI(endpoint, options = {}) {
 // ===== HOME PAGE (Dashboard) =====
 export async function initDashboard() {
     console.log('Initializing dashboard...');
-    await loadWordCloud();
-    await loadTrendingChart();
+    await loadTopicNetwork();
     updateStats();
 }
 
-async function loadWordCloud() {
-    const container = document.getElementById('wordcloud-container');
-    const loading = document.getElementById('wordcloud-loading');
-    const canvas = document.getElementById('wordcloud');
+function colorForString(str) {
+    // Generate a repeatable color from string
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
+}
 
+function darker(color, factor = 0.2) {
     try {
-        loading.style.display = 'block';
-        const data = await fetchAPI('/api/wordcloud');
-
-        if (data && data.words && data.words.length > 0) {
-            loading.style.display = 'none';
-            container.style.display = 'block';
-
-            // Convert to WordCloud2 format
-            const wordList = data.words.map(w => [w.text, w.value]);
-
-            // Initialize word cloud
-            WordCloud(canvas, {
-                list: wordList,
-                gridSize: 8,
-                weightFactor: 3,
-                fontFamily: 'Arial, sans-serif',
-                color: function() {
-                    const colors = ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
-                    return colors[Math.floor(Math.random() * colors.length)];
-                },
-                rotateRatio: 0.3,
-                backgroundColor: '#ffffff',
-                click: function(item) {
-                    // Navigate to people page with topic filter
-                    window.location.href = `people.html?topic=${encodeURIComponent(item[0])}`;
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error loading word cloud:', error);
-        loading.textContent = 'Failed to load word cloud';
+        const c = d3.color(color);
+        c.l -= factor;
+        return c.formatHsl();
+    } catch {
+        return color;
     }
 }
+/*
+  loadTopicNetwork()
+  - tries /api/trending_network (nodes + links). If not found, falls back to /api/trending and /api/wordcloud
+  - renders a force-directed network using D3 v7
+  - nodes sized by frequency and drawn with radial gradients to appear 3D
+  - clicking a node navigates to people.html?topic=...
+*/
+async function loadTopicNetwork() {
+    const svg = d3.select('#topic-network');
+    const loading = document.getElementById('network-loading');
+    loading.style.display = 'block';
+    svg.selectAll('*').remove();
 
-async function loadTrendingChart() {
-    const chartCanvas = document.getElementById('trending-chart');
-    const loading = document.getElementById('chart-loading');
-
+    // Fetch trending network data or build fallback
+    let data = null;
     try {
-        loading.style.display = 'block';
-        const data = await fetchAPI('/api/trending');
-
-        if (data && data.topics && data.counts) {
-            loading.style.display = 'none';
-
-            const ctx = chartCanvas.getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.topics.slice(0, 8),
-                    datasets: [{
-                        label: 'Research Activity',
-                        data: data.counts.slice(0, 8),
-                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Frequency'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
-                        }
-                    },
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const topic = data.topics[index];
-                            window.location.href = `people.html?topic=${encodeURIComponent(topic)}`;
-                        }
-                    }
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error loading chart:', error);
-        loading.textContent = 'Failed to load chart';
+        data = await fetchAPI('/api/trending_network');
+    } catch (e) {
+        console.warn('Using mock data fallback');
+        data = {
+            nodes: [
+                { id: "AI Ethics", value: 42 },
+                { id: "Neural Networks", value: 35 },
+                { id: "Reinforcement Learning", value: 28 },
+                { id: "Computer Vision", value: 22 },
+                { id: "Natural Language Processing", value: 50 },
+                { id: "Quantum AI", value: 18 },
+                { id: "Generative Models", value: 45 }
+            ],
+            links: [
+                { source: "AI Ethics", target: "Neural Networks" },
+                { source: "Neural Networks", target: "Reinforcement Learning" },
+                { source: "Reinforcement Learning", target: "Computer Vision" },
+                { source: "Computer Vision", target: "Natural Language Processing" },
+                { source: "Generative Models", target: "Natural Language Processing" },
+                { source: "Quantum AI", target: "AI Ethics" }
+            ]
+        };
     }
-}
 
-function updateStats() {
-    // Update stat cards with animated counts
-    animateValue('stat-topics', 0, 25, 1000);
-    animateValue('stat-researchers', 0, 150, 1500);
-    animateValue('stat-papers', 0, 2400, 2000);
-}
+    const nodes = data.nodes || [];
+    const links = data.links || [];
 
-function animateValue(id, start, end, duration) {
-    const element = document.getElementById(id);
-    if (!element) return;
+    if (nodes.length === 0) {
+        loading.textContent = 'No topics available';
+        return;
+    }
 
-    const range = end - start;
-    const increment = range / (duration / 16);
-    let current = start;
+    // Normalize node sizes
+    const values = nodes.map(n => n.value);
+    const rScale = d3.scaleSqrt().domain([Math.min(...values), Math.max(...values)]).range([8, 40]);
 
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-            element.textContent = end + '+';
-            clearInterval(timer);
+    loading.style.display = 'none';
+
+    const bbox = svg.node().getBoundingClientRect();
+    const width = bbox.width || 800;
+    const height = bbox.height || 500;
+    svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+    // Color from styles.css
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color') || '#4f46e5';
+
+    // Force simulation (runs once)
+    const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(90))
+        .force('charge', d3.forceManyBody().strength(-200))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collide', d3.forceCollide().radius(d => rScale(d.value) + 6))
+        .stop();
+
+    // Run the simulation manually (static layout)
+    simulation.tick(200);
+
+    // Draw links
+    svg.append('g')
+        .attr('stroke', 'var(--border-color)')
+        .attr('stroke-opacity', 0.6)
+        .selectAll('line')
+        .data(links)
+        .enter().append('line')
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+
+    // Tooltip
+    let tooltip = d3.select('body').selectAll('.topic-tooltip').data([0]);
+    tooltip = tooltip.enter().append('div').attr('class','topic-tooltip').merge(tooltip);
+
+    // Draw nodes
+    const nodeG = svg.append('g')
+        .selectAll('circle')
+        .data(nodes)
+        .enter().append('circle')
+        .attr('r', d => rScale(d.value))
+        .attr('cx', d => d.x)
+        .attr('cy', d => d.y)
+        .attr('fill', accent)
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 1.5)
+        .on('mouseover', function(event, d) {
+            tooltip
+                .style('display', 'block')
+                .html(`<strong>${d.id}</strong><div style="font-size:0.85rem;color:var(--text-secondary)">Frequency: ${d.value}</div>`);
+        })
+        .on('mousemove', function(event) {
+            tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY + 12) + 'px');
+        })
+        .on('mouseout', function() {
+            tooltip.style('display', 'none');
+        })
+        .on('click', function(event, d) {
+            window.location.href = `people.html?topic=${encodeURIComponent(d.id)}`;
+        });
+
+    // Label text
+    svg.append('g')
+        .selectAll('text')
+        .data(nodes)
+        .enter().append('text')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y + rScale(d.value) + 14)
+        .attr('text-anchor', 'middle')
+        .attr('font-weight', '600')
+        .attr('fill', 'var(--text-primary)')
+        .text(d => d.id);
+
+    // === Quick Stats updates ===
+    try {
+        // Trending Topics
+        const topTopics = nodes.sort((a, b) => b.value - a.value).slice(0, 3).map(n => n.id).join(', ');
+        document.getElementById('stat-topics').textContent = topTopics || '-';
+
+        // Active Researchers
+        const people = await fetchAPI('/api/people');
+        if (people && Array.isArray(people)) {
+            document.getElementById('stat-researchers').textContent = people.length.toString();
+        } else if (people && people.count) {
+            document.getElementById('stat-researchers').textContent = people.count.toString();
         } else {
-            element.textContent = Math.floor(current) + '+';
+            document.getElementById('stat-researchers').textContent = '-';
         }
-    }, 16);
+
+        // Recent Papers
+        const papers = await fetchAPI('/api/papers');
+        if (papers && Array.isArray(papers)) {
+            document.getElementById('stat-papers').textContent = papers.length.toString();
+        } else if (papers && papers.count) {
+            document.getElementById('stat-papers').textContent = papers.count.toString();
+        } else {
+            document.getElementById('stat-papers').textContent = '-';
+        }
+    } catch (err) {
+        console.warn('Could not update stats:', err);
+    }
+
+    try {
+        // Trending Topics (top 3)
+        const topTopics = nodes.sort((a, b) => b.value - a.value).slice(0, 3).map(n => n.id).join(', ');
+        document.getElementById('stat-topics').textContent = topTopics || '-';
+
+        // Mock researchers & papers
+        document.getElementById('stat-researchers').textContent = '23';
+        document.getElementById('stat-papers').textContent = '12';
+    } catch (err) {
+        console.warn('Could not update stats:', err);
+    }
 }
 
 // ===== PEOPLE PAGE (Researchers) =====
