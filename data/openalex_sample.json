@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "count": 200,
+    "db_response_time_ms": 25,
+    "page": 1,
+    "per_page": 25
+  },
+  "results": [
+    {
+      "id": "https://openalex.org/W4285123456",
+      "title": "Advances in Large Language Models for AI Safety",
+      "display_name": "Advances in Large Language Models for AI Safety",
+      "publication_date": "2025-01-15",
+      "cited_by_count": 42,
+      "concepts": [
+        {
+          "id": "https://openalex.org/C154945302",
+          "display_name": "Artificial Intelligence",
+          "level": 1
+        },
+        {
+          "id": "https://openalex.org/C204321447",
+          "display_name": "Large Language Models",
+          "level": 2
+        },
+        {
+          "id": "https://openalex.org/C189378123",
+          "display_name": "AI Safety",
+          "level": 2
+        }
+      ],
+      "authorships": [
+        {
+          "author": {
+            "id": "https://openalex.org/A2345678901",
+            "display_name": "Alice Zhang"
+          }
+        }
+      ]
+    },
+    {
+      "id": "https://openalex.org/W4285123457",
+      "title": "Multimodal Learning with Vision-Language Models",
+      "display_name": "Multimodal Learning with Vision-Language Models",
+      "publication_date": "2025-01-10",
+      "cited_by_count": 35,
+      "concepts": [
+        {
+          "id": "https://openalex.org/C154945302",
+          "display_name": "Artificial Intelligence",
+          "level": 1
+        },
+        {
+          "id": "https://openalex.org/C119857082",
+          "display_name": "Computer Vision",
+          "level": 2
+        },
+        {
+          "id": "https://openalex.org/C204787876",
+          "display_name": "Multimodal Learning",
+          "level": 2
+        }
+      ]
+    },
+    {
+      "id": "https://openalex.org/W4285123458",
+      "title": "Efficient Diffusion Models for Image Generation",
+      "display_name": "Efficient Diffusion Models for Image Generation",
+      "publication_date": "2025-01-08",
+      "cited_by_count": 28,
+      "concepts": [
+        {
+          "id": "https://openalex.org/C154945302",
+          "display_name": "Artificial Intelligence",
+          "level": 1
+        },
+        {
+          "id": "https://openalex.org/C119857082",
+          "display_name": "Computer Vision",
+          "level": 2
+        },
+        {
+          "id": "https://openalex.org/C298234567",
+          "display_name": "Diffusion Models",
+          "level": 3
+        }
+      ]
+    }
+  ]
+}

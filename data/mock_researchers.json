@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Dr. Alice Zhang",
+    "affiliation": "MIT CSAIL",
+    "country": "US",
+    "link": "https://scholar.google.com/citations?user=alice_zhang",
+    "topics": ["Large Language Models", "Natural Language Processing", "AI Safety"],
+    "citations": 15420,
+    "works_count": 87
+  },
+  {
+    "name": "Prof. Mark Liu",
+    "affiliation": "Stanford AI Lab",
+    "country": "US",
+    "link": "https://arxiv.org/a/liu_m_1.html",
+    "topics": ["Multimodal Learning", "Vision-Language Models", "Computer Vision"],
+    "citations": 12350,
+    "works_count": 65
+  },
+  {
+    "name": "Dr. Sarah Chen",
+    "affiliation": "Google DeepMind",
+    "country": "UK",
+    "link": "https://scholar.google.com/citations?user=sarah_chen",
+    "topics": ["Reinforcement Learning", "Agent Systems", "AI Safety"],
+    "citations": 18900,
+    "works_count": 52
+  },
+  {
+    "name": "Prof. James Anderson",
+    "affiliation": "UC Berkeley",
+    "country": "US",
+    "link": "https://scholar.google.com/citations?user=j_anderson",
+    "topics": ["Deep Learning", "Neural Networks", "Transfer Learning"],
+    "citations": 22100,
+    "works_count": 120
+  },
+  {
+    "name": "Dr. Elena Rodriguez",
+    "affiliation": "Carnegie Mellon University",
+    "country": "US",
+    "link": "https://scholar.google.com/citations?user=e_rodriguez",
+    "topics": ["Computer Vision", "Generative AI", "Diffusion Models"],
+    "citations": 9800,
+    "works_count": 45
+  },
+  {
+    "name": "Prof. Wei Li",
+    "affiliation": "Tsinghua University",
+    "country": "CN",
+    "link": "https://scholar.google.com/citations?user=wei_li",
+    "topics": ["Natural Language Processing", "Large Language Models", "Machine Learning"],
+    "citations": 14200,
+    "works_count": 92
+  },
+  {
+    "name": "Dr. Michael Brown",
+    "affiliation": "Oxford University",
+    "country": "UK",
+    "link": "https://scholar.google.com/citations?user=m_brown",
+    "topics": ["AI Safety", "AI Alignment", "Explainable AI"],
+    "citations": 8500,
+    "works_count": 38
+  },
+  {
+    "name": "Prof. Yuki Tanaka",
+    "affiliation": "University of Tokyo",
+    "country": "JP",
+    "link": "https://scholar.google.com/citations?user=y_tanaka",
+    "topics": ["Robotics", "Reinforcement Learning", "Agent Systems"],
+    "citations": 11200,
+    "works_count": 68
+  },
+  {
+    "name": "Dr. Sophie Martin",
+    "affiliation": "ETH Zurich",
+    "country": "CH",
+    "link": "https://scholar.google.com/citations?user=s_martin",
+    "topics": ["Meta-Learning", "Few-Shot Learning", "Transfer Learning"],
+    "citations": 7600,
+    "works_count": 41
+  },
+  {
+    "name": "Prof. David Kumar",
+    "affiliation": "IIT Delhi",
+    "country": "IN",
+    "link": "https://scholar.google.com/citations?user=d_kumar",
+    "topics": ["Graph Neural Networks", "Deep Learning", "Machine Learning"],
+    "citations": 6900,
+    "works_count": 55
+  }
+]

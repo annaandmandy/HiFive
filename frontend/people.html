@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Dashboard - Researchers</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">AI Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="people.html" class="active">Researchers</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Find AI Researchers & Collaborators</h2>
+            <p>Search and filter researchers by topic, institution, or country</p>
+        </section>
+
+        <!-- Search & Filter Section -->
+        <section class="filters-section">
+            <div class="filters-card">
+                <h3>Search Filters</h3>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="topic-filter">Research Topic</label>
+                        <input
+                            type="text"
+                            id="topic-filter"
+                            placeholder="e.g., LLM, Computer Vision"
+                            class="filter-input"
+                        >
+                    </div>
+                    <div class="filter-group">
+                        <label for="institution-filter">Institution</label>
+                        <input
+                            type="text"
+                            id="institution-filter"
+                            placeholder="e.g., MIT, Stanford"
+                            class="filter-input"
+                        >
+                    </div>
+                    <div class="filter-group">
+                        <label for="country-filter">Country</label>
+                        <input
+                            type="text"
+                            id="country-filter"
+                            placeholder="e.g., US, UK, CN"
+                            class="filter-input"
+                        >
+                    </div>
+                    <div class="filter-group">
+                        <button id="search-btn" class="btn btn-primary">Search</button>
+                        <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <div class="results-header">
+                <h3>Researchers <span id="results-count" class="count-badge">0</span></h3>
+                <div class="sort-options">
+                    <label>Sort by:</label>
+                    <select id="sort-select">
+                        <option value="citations">Citations</option>
+                        <option value="name">Name</option>
+                        <option value="works">Works Count</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="researchers-loading" class="loading">Loading researchers...</div>
+            <div id="researchers-grid" class="researchers-grid"></div>
+            <div id="no-results" class="no-results" style="display: none;">
+                <p>No researchers found matching your criteria. Try adjusting your filters.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initPeoplePage } from './script.js';
+        initPeoplePage();
+    </script>
+</body>
+</html>

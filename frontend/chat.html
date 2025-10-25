@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Dashboard - Chat with Rhett</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">AI Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="people.html">Researchers</a></li>
+                <li><a href="chat.html" class="active">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Chat with Mascot Rhett</h2>
+            <p>Your friendly AI research assistant for discovering trends and collaborators</p>
+        </section>
+
+        <section class="chat-section">
+            <div class="chat-container">
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">🦊</div>
+                        <div class="message-content">
+                            <p><strong>Rhett</strong></p>
+                            <p>Hey there! I'm Rhett, your AI research assistant. Tell me about your research interests, and I'll help you discover trending topics and connect with relevant researchers!</p>
+                            <p class="suggestion-prompt">Try asking me about:</p>
+                            <div class="suggestions">
+                                <button class="suggestion-chip" data-query="Large Language Models">Large Language Models</button>
+                                <button class="suggestion-chip" data-query="AI Safety">AI Safety</button>
+                                <button class="suggestion-chip" data-query="Computer Vision">Computer Vision</button>
+                                <button class="suggestion-chip" data-query="Multimodal Learning">Multimodal Learning</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input
+                            type="text"
+                            id="chat-input"
+                            placeholder="Ask about AI research topics or trends..."
+                            class="chat-input"
+                        >
+                        <button id="send-btn" class="btn btn-primary send-btn">
+                            <span>Send</span>
+                        </button>
+                    </div>
+                    <div class="chat-footer">
+                        <small>Powered by OpenAI & OpenAlex</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggested Researchers Panel -->
+            <div class="suggestions-panel" id="suggestions-panel" style="display: none;">
+                <h3>Suggested Researchers</h3>
+                <div id="suggested-researchers"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initChatPage } from './script.js';
+        initChatPage();
+    </script>
+</body>
+</html>

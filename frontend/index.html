@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Dashboard - Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">AI Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="people.html">Researchers</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Discover Hot AI Topics & Research Trends</h2>
+            <p>Explore trending research areas, visualize topic evolution, and connect with leading researchers</p>
+        </section>
+
+        <section class="dashboard">
+            <div class="dashboard-grid">
+                <!-- Word Cloud Section -->
+                <div class="card wordcloud-card">
+                    <div class="card-header">
+                        <h3>Trending AI Topics</h3>
+                        <p>Most discussed research areas</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="wordcloud-container">
+                            <canvas id="wordcloud"></canvas>
+                        </div>
+                        <div id="wordcloud-loading" class="loading">Loading word cloud...</div>
+                    </div>
+                </div>
+
+                <!-- Trending Chart Section -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Topic Frequency</h3>
+                        <p>Research activity by topic</p>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trending-chart"></canvas>
+                        <div id="chart-loading" class="loading">Loading chart...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <h4 id="stat-topics">-</h4>
+                        <p>Trending Topics</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h4 id="stat-researchers">-</h4>
+                        <p>Active Researchers</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔬</div>
+                    <div class="stat-content">
+                        <h4 id="stat-papers">-</h4>
+                        <p>Recent Papers</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <h3>Ready to explore?</h3>
+                <div class="cta-buttons">
+                    <a href="people.html" class="btn btn-primary">Find Researchers</a>
+                    <a href="chat.html" class="btn btn-secondary">Chat with Rhett</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initDashboard } from './script.js';
+        initDashboard();
+    </script>
+</body>
+</html>
