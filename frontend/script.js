@@ -332,7 +332,8 @@ export async function initChatPage() {
     const closeSidebarBtn = document.getElementById('close-sidebar');
     if (closeSidebarBtn) {
         closeSidebarBtn.addEventListener('click', () => {
-            document.getElementById('researchers-sidebar').classList.remove('active');
+            const sidebar = document.getElementById('researchers-sidebar');
+            sidebar.classList.remove('active');
         });
     }
 }
@@ -369,14 +370,53 @@ async function sendMessage() {
         // Remove typing indicator
         removeTypingIndicator(typingId);
 
-        // Add bot response to chat history and UI
-        chatHistory.push({ type: 'bot', text: response.summary, researchers: response.suggested_researchers });
-        addMessage(response.summary, 'bot');
+        // Debug: Log the full response
+        console.log('[DEBUG] Chat API Response:', response);
+        console.log('[DEBUG] Suggested Researchers:', response.suggested_researchers);
+        console.log('[DEBUG] Suggested Papers:', response.suggested_papers);
+
+        // Build Rhett's full response (summary + papers)
+        let rhettMessageHTML = `<div class="message-text">${response.summary}</div>`;
+
+        // Add related papers section if available
+        if (response.suggested_papers && response.suggested_papers.length > 0) {
+            rhettMessageHTML += `
+                <div class="papers-list">
+                    <h4>📄 Related Papers</h4>
+                    <ul>
+                        ${response.suggested_papers
+                            .map(
+                                (p) => `
+                                <li>
+                                    <a href="${p.link}" target="_blank">${p.title}</a>
+                                    (${p.year || 'n/a'}) — Citations: ${p.citations || 0}
+                                </li>`
+                            )
+                            .join('')}
+                    </ul>
+                </div>`;
+        }
+
+        if ((!response.suggested_papers || response.suggested_papers.length === 0) &&
+            response.summary.includes('rapidly')) {
+            rhettMessageHTML += `<p class="note">No specific papers found — here are trending AI works instead.</p>`;
+        }
+
+
+        // Add message to chat.researcher
+        chatHistory.push({
+            type: 'bot',
+            text: response.summary,
+            researchers: response.suggested_researchers,
+            papers: response.suggested_papers
+        });
+        addMessage(rhettMessageHTML, 'bot');
 
         // Show suggested researchers in sidebar
         if (response.suggested_researchers && response.suggested_researchers.length > 0) {
             showSuggestedResearchers(response.suggested_researchers);
         }
+
     } catch (error) {
         console.error('Chat error:', error);
         removeTypingIndicator(typingId);
@@ -412,7 +452,7 @@ function addMessage(text, type) {
             </div>
             <div class="message-content">
                 <div class="message-sender">Rhett</div>
-                <div class="message-text">${text}</div>
+                ${text}
             </div>
         `;
     } else {

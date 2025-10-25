@@ -587,3 +587,31 @@
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
+
+.papers-list {
+    margin-top: 10px;
+    background: #fff6eb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.papers-list h4 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+}
+
+.papers-list ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.papers-list a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+.papers-list a:hover {
+    text-decoration: underline;
+}
