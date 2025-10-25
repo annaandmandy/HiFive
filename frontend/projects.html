@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Research Dashboard - Projects</title>
+    <title>Research Dashboard - Projects</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="projects.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <h1 class="logo">AI Research Dashboard</h1>
+            <h1 class="logo">Research Dashboard</h1>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="people.html">Researchers</a></li>
@@ -80,7 +80,6 @@
                         <option value="">Any</option>
                         <option value="proposal">Proposal</option>
                         <option value="in-progress">In Progress</option>
-                        <option value="concluded">Concluded</option>
                         <option value="finished">Finished</option>
                         <option value="published">Published</option>
                     </select>
@@ -99,6 +98,24 @@
                         <option value="">Any Mode</option>
                         <option value="online">Online</option>
                         <option value="offline">Offline</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-funding-filter">Funding Status</label>
+                    <select id="project-funding-filter">
+                        <option value="">Any Status</option>
+                        <option value="seeking">Seeking Funding</option>
+                        <option value="partial">Partially Funded</option>
+                        <option value="secured">Funding Secured</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="project-requirement-filter">Requirement Level</label>
+                    <select id="project-requirement-filter">
+                        <option value="">Any Level</option>
+                        <option value="low">Low Requirements</option>
+                        <option value="medium">Moderate Requirements</option>
+                        <option value="high">High Requirements</option>
                     </select>
                 </div>
                 <div class="filter-actions">
@@ -121,6 +138,28 @@
                         <div class="form-group">
                             <label for="project-lead">Project Lead</label>
                             <input type="text" id="project-lead" placeholder="Lead researcher or student">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-lead-type">Lead Type</label>
+                            <select id="project-lead-type">
+                                <option value="student-led" selected>Student-led</option>
+                                <option value="professor-led">Professor-led</option>
+                                <option value="collaborative">Student &amp; Professor Collaboration</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Launch Type</span>
+                            <div class="toggle-group launch-type-toggle" role="group" aria-label="Launch type">
+                                <label class="toggle-option">
+                                    <input type="radio" name="project-launch-type" value="project" checked>
+                                    <span>Project</span>
+                                </label>
+                                <label class="toggle-option">
+                                    <input type="radio" name="project-launch-type" value="research">
+                                    <span>Research</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="project-topic">Primary Topic</label>
@@ -173,7 +212,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+        <p>&copy; 2025 Research Dashboard | Powered by OpenAlex & OpenAI</p>
     </footer>
 
     <script type="module" src="script.js"></script>
