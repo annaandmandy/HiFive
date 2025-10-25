@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Research Dashboard - Chat with Rhett</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles_chat.css">
 </head>
 <body>
     <nav class="navbar">
@@ -18,57 +19,61 @@
         </div>
     </nav>
 
-    <main class="container">
-        <section class="hero">
-            <h2>Chat with Mascot Rhett</h2>
-            <p>Your friendly AI research assistant for discovering trends and collaborators</p>
-        </section>
-
-        <section class="chat-section">
-            <div class="chat-container">
-                <!-- Chat Messages -->
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message bot-message">
-                        <div class="message-avatar">🦊</div>
-                        <div class="message-content">
-                            <p><strong>Rhett</strong></p>
-                            <p>Hey there! I'm Rhett, your AI research assistant. Tell me about your research interests, and I'll help you discover trending topics and connect with relevant researchers!</p>
-                            <p class="suggestion-prompt">Try asking me about:</p>
-                            <div class="suggestions">
-                                <button class="suggestion-chip" data-query="Large Language Models">Large Language Models</button>
-                                <button class="suggestion-chip" data-query="AI Safety">AI Safety</button>
-                                <button class="suggestion-chip" data-query="Computer Vision">Computer Vision</button>
-                                <button class="suggestion-chip" data-query="Multimodal Learning">Multimodal Learning</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chat Input -->
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <input
-                            type="text"
-                            id="chat-input"
-                            placeholder="Ask about AI research topics or trends..."
-                            class="chat-input"
-                        >
-                        <button id="send-btn" class="btn btn-primary send-btn">
-                            <span>Send</span>
-                        </button>
-                    </div>
-                    <div class="chat-footer">
-                        <small>Powered by OpenAI & OpenAlex</small>
-                    </div>
+    <main class="chat-main">
+        <!-- Welcome Container with Big Rhett -->
+        <div class="rhett-welcome-container" id="rhett-welcome">
+            <div class="rhett-welcome-content">
+                <img src="assets/rhett-removebg-preview.png" alt="Rhett the Mascot" class="rhett-image-large">
+                <h2 class="rhett-greeting">Hi! I'm Rhett</h2>
+                <p class="rhett-subtitle">Your AI research assistant. Ask me about trending topics, research areas, or find researchers in your field!</p>
+                <div class="example-questions">
+                    <p class="example-label">Try asking:</p>
+                    <button class="example-chip" data-query="What are the trending topics in Large Language Models?">Large Language Models trends</button>
+                    <button class="example-chip" data-query="Tell me about AI Safety research">AI Safety research</button>
+                    <button class="example-chip" data-query="Who are the top researchers in Computer Vision?">Computer Vision experts</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Suggested Researchers Panel -->
-            <div class="suggestions-panel" id="suggestions-panel" style="display: none;">
+        <!-- Chat Messages Container -->
+        <div class="chat-messages-wrapper" id="chat-wrapper" style="display: none;">
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Chat Input at Bottom -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input
+                    type="text"
+                    id="chat-input"
+                    placeholder="Ask about AI research topics, trends, or researchers..."
+                    class="chat-input"
+                    autocomplete="off"
+                >
+                <button id="send-btn" class="btn btn-primary send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="chat-footer">
+                <small>Powered by OpenAI & OpenAlex</small>
+            </div>
+        </div>
+
+        <!-- Suggested Researchers Sidebar -->
+        <aside class="researchers-sidebar" id="researchers-sidebar" style="display: none;">
+            <div class="sidebar-header">
                 <h3>Suggested Researchers</h3>
-                <div id="suggested-researchers"></div>
+                <button class="close-sidebar" id="close-sidebar">&times;</button>
             </div>
-        </section>
+            <div class="sidebar-content" id="suggested-researchers">
+                <!-- Researcher cards will be added here -->
+            </div>
+        </aside>
     </main>
 
     <footer>
