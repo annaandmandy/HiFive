@@ -330,10 +330,30 @@ export async function initChatPage() {
 
     // Handle close sidebar button
     const closeSidebarBtn = document.getElementById('close-sidebar');
+    const reopenSidebarBtn = document.getElementById('reopen-sidebar');
+
     if (closeSidebarBtn) {
         closeSidebarBtn.addEventListener('click', () => {
             const sidebar = document.getElementById('researchers-sidebar');
+            const chatMain = document.querySelector('.chat-main');
             sidebar.classList.remove('active');
+            chatMain.classList.remove('sidebar-active');
+
+            // Show reopen button
+            if (reopenSidebarBtn) {
+                reopenSidebarBtn.style.display = 'flex';
+            }
+        });
+    }
+
+    // Handle reopen sidebar button
+    if (reopenSidebarBtn) {
+        reopenSidebarBtn.addEventListener('click', () => {
+            const sidebar = document.getElementById('researchers-sidebar');
+            const chatMain = document.querySelector('.chat-main');
+            sidebar.classList.add('active');
+            chatMain.classList.add('sidebar-active');
+            reopenSidebarBtn.style.display = 'none';
         });
     }
 }
@@ -502,24 +522,43 @@ function removeTypingIndicator(id) {
 function showSuggestedResearchers(researchers) {
     const sidebar = document.getElementById('researchers-sidebar');
     const container = document.getElementById('suggested-researchers');
+    const chatMain = document.querySelector('.chat-main');
+    const reopenBtn = document.getElementById('reopen-sidebar');
+    const countBadge = document.getElementById('researcher-count');
 
     container.innerHTML = '';
 
     researchers.forEach(researcher => {
         const card = document.createElement('div');
         card.className = 'researcher-mini-card';
+
+        // Make entire card clickable
+        card.addEventListener('click', () => {
+            window.open(researcher.link, '_blank');
+        });
+
         card.innerHTML = `
             <h4>${researcher.name}</h4>
             ${researcher.field ? `<p class="field">${researcher.field}</p>` : ''}
             ${researcher.affiliation ? `<p class="affiliation">${researcher.affiliation}</p>` : ''}
-            <a href="${researcher.link}" target="_blank" class="btn btn-sm btn-primary">View Profile</a>
+            <div class="btn btn-sm btn-primary">View Profile</div>
         `;
         container.appendChild(card);
     });
 
-    // Show sidebar with animation
+    // Update count badge
+    if (countBadge) {
+        countBadge.textContent = researchers.length;
+    }
+
+    // Show sidebar with animation and add padding to chat main
     sidebar.style.display = 'flex';
     setTimeout(() => {
         sidebar.classList.add('active');
+        chatMain.classList.add('sidebar-active');
+        // Hide reopen button when sidebar is shown
+        if (reopenBtn) {
+            reopenBtn.style.display = 'none';
+        }
     }, 10);
 }
