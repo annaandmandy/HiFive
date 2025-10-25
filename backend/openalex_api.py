@@ -61,27 +61,36 @@ async def search_researchers(
 ) -> Optional[List[Dict]]:
     """
     Search for researchers using OpenAlex Authors API
+    Uses search parameter for topic to find authors whose work relates to the topic
     """
     try:
         filters = []
+        search_query = None
 
         # Build filters
-        if topic:
-            # Search for authors working on this topic
-            filters.append(f"concepts.id:C154945302")  # AI concept
-
         if institution:
             filters.append(f"last_known_institution.display_name.search:{institution}")
 
         if country:
             filters.append(f"last_known_institution.country_code:{country.upper()}")
 
+        # Use search parameter for topic (searches author's works and concepts)
+        if topic:
+            search_query = topic
+
         params = {
-            "filter": ",".join(filters) if filters else "concepts.id:C154945302",
             "per_page": limit,
             "mailto": EMAIL,
             "sort": "cited_by_count:desc"
         }
+
+        # Add search query if provided
+        if search_query:
+            params["search"] = search_query
+
+        # Add filters if any
+        if filters:
+            params["filter"] = ",".join(filters)
 
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(f"{OPENALEX_API_BASE}/authors", params=params)
@@ -101,14 +110,19 @@ async def search_researchers(
                 affiliation = institution_info.get("display_name", "Unknown")
                 country_code = institution_info.get("country_code", "")
 
+                # Get author ID (OpenAlex URL)
+                author_id = author.get("id", "")
+
                 researchers.append({
+                    "id": author_id,
                     "name": author.get("display_name", "Unknown"),
                     "affiliation": affiliation,
                     "country": country_code,
-                    "link": author.get("orcid") or f"https://scholar.google.com/scholar?q={author.get('display_name', '').replace(' ', '+')}",
+                    "link": author_id or author.get("orcid") or f"https://scholar.google.com/scholar?q={author.get('display_name', '').replace(' ', '+')}",
                     "topics": topics,
                     "citations": author.get("cited_by_count", 0),
-                    "works_count": author.get("works_count", 0)
+                    "works_count": author.get("works_count", 0),
+                    "works": author.get("works_count", 0)  # Add alias for compatibility
                 })
 
             return researchers

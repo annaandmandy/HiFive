@@ -71,15 +71,23 @@ async def get_researchers(
     country: Optional[str] = None
 ):
     """
-    Search and filter researchers
+    Search and filter researchers using real OpenAlex data
     """
     try:
-        # Try to get real data from OpenAlex
+        print(f"[API] Searching researchers - topic: {topic}, institution: {institution}, country: {country}")
+
+        # Get real data from OpenAlex
         data = await search_researchers(topic=topic, institution=institution, country=country)
+
         if data:
+            print(f"[API] Found {len(data)} researchers from OpenAlex")
             return {"researchers": data}
+        else:
+            print("[API] No data returned from OpenAlex, using fallback")
     except Exception as e:
-        print(f"Error searching researchers: {e}")
+        print(f"[API] Error searching researchers: {e}")
+        import traceback
+        traceback.print_exc()
 
     # Fallback to mock data with client-side filtering
     mock_researchers = get_mock_researchers()
@@ -93,6 +101,7 @@ async def get_researchers(
     if country:
         filtered = [r for r in filtered if country.lower() in r.get("country", "").lower()]
 
+    print(f"[API] Returning {len(filtered)} mock researchers as fallback")
     return {"researchers": filtered}
 
 # -------------------------
