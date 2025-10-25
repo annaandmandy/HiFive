@@ -18,57 +18,41 @@
         </div>
     </nav>
 
-    <main class="container">
-        <section class="hero">
-            <h2>Chat with Mascot Rhett</h2>
-            <p>Your friendly AI research assistant for discovering trends and collaborators</p>
-        </section>
+    <main class="chat-main">
+        <!-- Rhett Image in Center -->
+        <div class="rhett-container">
+            <img src="assets/rhett-removebg-preview.png" alt="Rhett the Mascot" class="rhett-image">
+            <h2 class="rhett-greeting">Hi! I'm Rhett</h2>
+            <p class="rhett-subtitle">Ask me about AI research topics and trends</p>
+        </div>
 
-        <section class="chat-section">
-            <div class="chat-container">
-                <!-- Chat Messages -->
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message bot-message">
-                        <div class="message-avatar">🦊</div>
-                        <div class="message-content">
-                            <p><strong>Rhett</strong></p>
-                            <p>Hey there! I'm Rhett, your AI research assistant. Tell me about your research interests, and I'll help you discover trending topics and connect with relevant researchers!</p>
-                            <p class="suggestion-prompt">Try asking me about:</p>
-                            <div class="suggestions">
-                                <button class="suggestion-chip" data-query="Large Language Models">Large Language Models</button>
-                                <button class="suggestion-chip" data-query="AI Safety">AI Safety</button>
-                                <button class="suggestion-chip" data-query="Computer Vision">Computer Vision</button>
-                                <button class="suggestion-chip" data-query="Multimodal Learning">Multimodal Learning</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Chat Messages Area (initially hidden, shows when conversation starts) -->
+        <div class="chat-messages" id="chat-messages" style="display: none;">
+        </div>
 
-                <!-- Chat Input -->
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <input
-                            type="text"
-                            id="chat-input"
-                            placeholder="Ask about AI research topics or trends..."
-                            class="chat-input"
-                        >
-                        <button id="send-btn" class="btn btn-primary send-btn">
-                            <span>Send</span>
-                        </button>
-                    </div>
-                    <div class="chat-footer">
-                        <small>Powered by OpenAI & OpenAlex</small>
-                    </div>
-                </div>
+        <!-- Chat Input at Bottom -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input
+                    type="text"
+                    id="chat-input"
+                    placeholder="Ask about AI research topics or trends..."
+                    class="chat-input"
+                >
+                <button id="send-btn" class="btn btn-primary send-btn">
+                    <span>Send</span>
+                </button>
             </div>
-
-            <!-- Suggested Researchers Panel -->
-            <div class="suggestions-panel" id="suggestions-panel" style="display: none;">
-                <h3>Suggested Researchers</h3>
-                <div id="suggested-researchers"></div>
+            <div class="chat-footer">
+                <small>Powered by OpenAI & OpenAlex</small>
             </div>
-        </section>
+        </div>
+
+        <!-- Suggested Researchers Panel -->
+        <div class="suggestions-panel" id="suggestions-panel" style="display: none;">
+            <h3>Suggested Researchers</h3>
+            <div id="suggested-researchers"></div>
+        </div>
     </main>
 
     <footer>
