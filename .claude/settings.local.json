@@ -5,7 +5,8 @@
       "Bash(python3:*)",
       "Bash(for file in people.html chat.html projects.html lootbox.html rsti.html)",
       "Bash(do)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for file in research.html people.html projects.html chat.html)"
     ],
     "deny": [],
     "ask": []
