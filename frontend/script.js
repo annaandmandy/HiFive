@@ -1,6 +1,6 @@
 // API Configuration
 const API_BASE_URL = 'http://localhost:8000';
-const PROJECTS_DATA_URL = '../data/mock_projects.json';
+const PROJECTS_DATA_URL = 'mock_projects.json';
 let previewModalElements = null;
 let lastPreviewTrigger = null;
 
