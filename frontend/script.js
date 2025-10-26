@@ -1250,6 +1250,7 @@ function getProjectControls() {
     return {
         searchInput: document.getElementById('project-search-input'),
         searchBtn: document.getElementById('project-search-btn'),
+        topicSelect: document.getElementById('project-topic-filter'),
         sortSelect: document.getElementById('project-sort-select'),
         filterToggle: document.getElementById('project-filter-btn'),
         filterPanel: document.getElementById('project-filters'),
@@ -1534,6 +1535,7 @@ function wireProjectControls(controls, applyAndRender) {
 
 function resetProjectFilters(controls) {
     if (controls.searchInput) controls.searchInput.value = '';
+    controls.topicSelect && (controls.topicSelect.value = '');
     controls.stageSelect && (controls.stageSelect.value = '');
     controls.locationSelect && (controls.locationSelect.value = '');
     controls.modeSelect && (controls.modeSelect.value = '');
@@ -1552,6 +1554,18 @@ function filterProjects(projects, controls) {
     const query = controls.searchInput?.value.trim().toLowerCase();
     if (query) {
         results = results.filter((project) => matchesQuery(project, query));
+    }
+
+    const topicValue = controls.topicSelect?.value;
+    if (topicValue) {
+        results = results.filter((project) => {
+            if (Array.isArray(project.topics) && project.topics.length) {
+                return project.topics.some((t) => t === topicValue);
+            }
+            const topic = (project.topic || '').toString();
+            const normalized = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            return normalized.includes(topicValue);
+        });
     }
 
     const stageValue = controls.stageSelect?.value;
@@ -1601,6 +1615,7 @@ function matchesQuery(project, query) {
         project.summary,
         project.lead?.name,
         project.lead?.role,
+        ...(project.topics || []),
         ...(project.tags || [])
     ];
 
