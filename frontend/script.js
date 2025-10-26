@@ -392,6 +392,9 @@ export async function initPeoplePage() {
     const bubbleBtn = document.getElementById('bubble-view-btn');
     const swipeBtn = document.getElementById('swipe-view-btn');
 
+    // Set grid as default active view
+    if (gridBtn) gridBtn.classList.add('active');
+
     gridBtn.addEventListener('click', () => showSection('grid'));
     bubbleBtn.addEventListener('click', () => showSection('bubble'));
     swipeBtn.addEventListener('click', () => showSection('swipe'));
@@ -542,6 +545,16 @@ function showSection(section) {
     const bubbleSection = document.getElementById('bubble-section');
     const swipeSection = document.getElementById('swipe-section');
 
+    // Get button references
+    const gridBtn = document.getElementById('grid-view-btn');
+    const bubbleBtn = document.getElementById('bubble-view-btn');
+    const swipeBtn = document.getElementById('swipe-view-btn');
+
+    // Remove active class from all buttons
+    if (gridBtn) gridBtn.classList.remove('active');
+    if (bubbleBtn) bubbleBtn.classList.remove('active');
+    if (swipeBtn) swipeBtn.classList.remove('active');
+
     // default hide all
     if (gridSection) gridSection.style.display = 'none';
     if (bubbleSection) bubbleSection.style.display = 'none';
@@ -554,14 +567,17 @@ function showSection(section) {
 
     if (section === 'grid') {
         if (gridSection) gridSection.style.display = '';
+        if (gridBtn) gridBtn.classList.add('active');
     } else if (section === 'bubble') {
         if (bubbleSection) bubbleSection.style.display = '';
+        if (bubbleBtn) bubbleBtn.classList.add('active');
     } else if (section === 'swipe') {
         if (swipeSection) {
             swipeSection.style.display = '';
             // build deck from currentResearchers
             buildSwipeDeck();
         }
+        if (swipeBtn) swipeBtn.classList.add('active');
     }
 }
 

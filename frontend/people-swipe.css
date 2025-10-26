@@ -22,7 +22,7 @@
 .swipe-container {
     width: 100%;
     max-width: 900px;
-    height: 65vh;
+    height: 40vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -44,14 +44,20 @@
     max-height: 620px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(16,24,40,0.12);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 15px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--border-color);
     display: flex;
     flex-direction: column;
     padding: 1.25rem;
-    transition: transform 300ms cubic-bezier(.22,.9,.26,1), opacity 250ms ease;
+    transition: transform 300ms cubic-bezier(.22,.9,.26,1), opacity 250ms ease, box-shadow 200ms ease;
     will-change: transform;
     cursor: grab;
     touch-action: none; /* allow us to handle touch gestures */
+    user-select: none;
+}
+
+.swipe-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 15px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* While dragging */
@@ -147,11 +153,12 @@
 /* Swipe off-screen helpers */
 .swipe-off-left {
     transform: translateX(-1500px) rotate(-30deg) !important;
-    opacity: 0;
+    opacity: 0 !important;
 }
+
 .swipe-off-right {
     transform: translateX(1500px) rotate(30deg) !important;
-    opacity: 0;
+    opacity: 0 !important;
 }
 
 /* Modal saved list */
