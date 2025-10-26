@@ -1,3 +1,5 @@
+// script.js
+
 // API Configuration
 const API_BASE_URL = 'http://localhost:8000';
 const PROJECTS_DATA_URL = 'mock_projects.json';
@@ -385,16 +387,33 @@ export async function initPeoplePage() {
     document.getElementById('reset-btn').addEventListener('click', handleReset);
     document.getElementById('sort-select').addEventListener('change', handleSort);
 
+    // View toggle buttons
+    const gridBtn = document.getElementById('grid-view-btn');
+    const bubbleBtn = document.getElementById('bubble-view-btn');
+    const swipeBtn = document.getElementById('swipe-view-btn');
+
+    gridBtn.addEventListener('click', () => showSection('grid'));
+    bubbleBtn.addEventListener('click', () => showSection('bubble'));
+    swipeBtn.addEventListener('click', () => showSection('swipe'));
+
     // Allow Enter key to search
     ['topic-filter', 'institution-filter', 'country-filter'].forEach(id => {
-        document.getElementById(id).addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSearch();
-        });
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSearch();
+            });
+        }
     });
+
+    // Initialize swipe UI controls
+    initSwipeControls();
 }
 
 let currentResearchers = [];
+let savedResearchers = [];
 
+// Load researchers from API using filters
 async function loadResearchers() {
     const topic = document.getElementById('topic-filter').value;
     const institution = document.getElementById('institution-filter').value;
@@ -513,6 +532,357 @@ function handleSort() {
     }
 
     renderResearchers(sorted);
+}
+
+// ===== Swipe View Implementation =====
+
+function showSection(section) {
+    // sections: 'grid', 'bubble', 'swipe'
+    const gridSection = document.querySelector('.results-section');
+    const bubbleSection = document.getElementById('bubble-section');
+    const swipeSection = document.getElementById('swipe-section');
+
+    // default hide all
+    if (gridSection) gridSection.style.display = 'none';
+    if (bubbleSection) bubbleSection.style.display = 'none';
+    if (swipeSection) swipeSection.style.display = 'none';
+
+    // clear any extant swipe deck when leaving swipe mode
+    if (section !== 'swipe') {
+        clearSwipeDeck();
+    }
+
+    if (section === 'grid') {
+        if (gridSection) gridSection.style.display = '';
+    } else if (section === 'bubble') {
+        if (bubbleSection) bubbleSection.style.display = '';
+    } else if (section === 'swipe') {
+        if (swipeSection) {
+            swipeSection.style.display = '';
+            // build deck from currentResearchers
+            buildSwipeDeck();
+        }
+    }
+}
+
+// Initialize swipe controls and modal listeners
+function initSwipeControls() {
+    // buttons are present in people.html
+    const exitSwipeBtn = document.getElementById('exit-swipe-btn');
+    const viewSavedBtn = document.getElementById('view-saved-btn');
+    const savedModal = document.getElementById('saved-modal');
+    const savedCloseBtn = document.getElementById('saved-close-btn');
+    const savedClearBtn = document.getElementById('saved-clear-btn');
+    const swipeExitEmpty = document.getElementById('swipe-exit-empty');
+
+    if (exitSwipeBtn) {
+        exitSwipeBtn.addEventListener('click', () => showSection('grid'));
+    }
+    if (viewSavedBtn) {
+        viewSavedBtn.addEventListener('click', openSavedModal);
+    }
+    if (savedCloseBtn) {
+        savedCloseBtn.addEventListener('click', closeSavedModal);
+    }
+    if (savedClearBtn) {
+        savedClearBtn.addEventListener('click', () => {
+            savedResearchers = [];
+            renderSavedList();
+        });
+    }
+    if (swipeExitEmpty) {
+        swipeExitEmpty.addEventListener('click', () => showSection('grid'));
+    }
+}
+
+function openSavedModal() {
+    const modal = document.getElementById('saved-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    renderSavedList();
+}
+
+function closeSavedModal() {
+    const modal = document.getElementById('saved-modal');
+    if (!modal) return;
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+// Render the compact saved list inside modal
+function renderSavedList() {
+    const list = document.getElementById('saved-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!savedResearchers || savedResearchers.length === 0) {
+        list.innerHTML = `<p style="color:var(--text-secondary);">No saved researchers yet.</p>`;
+        return;
+    }
+
+    savedResearchers.forEach((r, idx) => {
+        const row = document.createElement('div');
+        row.className = 'saved-row';
+        row.innerHTML = `
+            <div class="left">
+                <div style="width:48px;height:48px;border-radius:8px;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">
+                    ${r.name.charAt(0)}
+                </div>
+                <div>
+                    <h4>${r.name}</h4>
+                    <div class="meta">${(r.topics && r.topics.slice(0,3).join(', ')) || ''}</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div class="meta">${r.citations ? formatNumber(r.citations) + ' citations' : ''}${r.works_count ? ', ' + r.works_count + ' works' : ''}</div>
+                <a class="btn btn-primary btn-sm" href="${r.link || '#'}" target="_blank">View Profile</a>
+            </div>
+        `;
+        list.appendChild(row);
+    });
+}
+
+// Build swipe deck
+function buildSwipeDeck() {
+    const container = document.getElementById('swipe-container');
+    if (!container) return;
+
+    // Clear existing cards but keep the empty placeholder
+    // (we re-use #swipe-empty else create it)
+    Array.from(container.children).forEach(child => {
+        if (child.id !== 'swipe-empty') child.remove();
+    });
+
+    if (!currentResearchers || currentResearchers.length === 0) {
+        // show empty state
+        const empty = document.getElementById('swipe-empty');
+        if (empty) empty.style.display = 'block';
+        return;
+    } else {
+        const empty = document.getElementById('swipe-empty');
+        if (empty) empty.style.display = 'none';
+    }
+
+    // Create cards. We'll add top N (or all) as stack. Top card is last appended.
+    const deck = [...currentResearchers]; // keep original order
+    // start from the last so the first researcher ends up on top (append order)
+    for (let i = deck.length - 1; i >= 0; i--) {
+        const r = deck[i];
+        const idxFromTop = deck.length - 1 - i; // 0 = top
+        const card = createSwipeCard(r, idxFromTop);
+        container.appendChild(card);
+    }
+
+    // set pointer handlers on top card
+    setTopCardPointerHandlers();
+}
+
+function clearSwipeDeck() {
+    const container = document.getElementById('swipe-container');
+    if (!container) return;
+    // remove cards but keep empty placeholder
+    Array.from(container.children).forEach(child => {
+        if (child.id !== 'swipe-empty') child.remove();
+    });
+}
+
+// Create swipe card element
+function createSwipeCard(researcher, indexFromTop) {
+    const card = document.createElement('div');
+    card.className = 'swipe-card';
+    card.setAttribute('data-index', indexFromTop);
+    // store researcher data on DOM el for convenience
+    card.__researcher = researcher;
+
+    const topicsHTML = researcher.topics
+        ? researcher.topics.slice(0, 3).map(t => `<span class="topic-tag">${t}</span>`).join('')
+        : '';
+
+    card.innerHTML = `
+        <div class="card-top">
+            <div class="swipe-avatar">${researcher.name.charAt(0)}</div>
+            <div style="flex:1;">
+                <h2>${researcher.name}</h2>
+                <p class="affiliation">${researcher.affiliation || ''}</p>
+                <div class="topics">${topicsHTML}</div>
+            </div>
+        </div>
+
+        <div class="stats">
+            ${researcher.citations ? `<div class="stat"><strong>${formatNumber(researcher.citations)}</strong> Citations</div>` : ''}
+            ${researcher.works_count ? `<div class="stat"><strong>${researcher.works_count}</strong> Works</div>` : ''}
+        </div>
+
+        <div class="swipe-actions">
+            <a href="${researcher.link || '#'}" target="_blank" class="btn btn-secondary btn-sm">View Profile</a>
+        </div>
+    `;
+
+    // initial transform handled via CSS data-index rules
+    card.style.transformOrigin = 'center';
+
+    return card;
+}
+
+// Set pointer handlers on the top card only
+function setTopCardPointerHandlers() {
+    const container = document.getElementById('swipe-container');
+    if (!container) return;
+
+    const topCard = Array.from(container.querySelectorAll('.swipe-card')).pop();
+    if (!topCard) {
+        // deck empty
+        showSwipeEmptyState();
+        return;
+    }
+
+    // remove existing handlers to avoid duplicates
+    topCard.onpointerdown = null;
+
+    // track dragging states
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    function pointerDown(e) {
+        e.preventDefault();
+        startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        isDragging = true;
+        topCard.classList.add('dragging');
+
+        // capture pointer (for pointer events)
+        if (e.pointerId) {
+            topCard.setPointerCapture(e.pointerId);
+        }
+    }
+
+    function pointerMove(e) {
+        if (!isDragging) return;
+        currentX = (e.clientX || (e.touches && e.touches[0].clientX)) - startX;
+        currentY = (e.clientY || (e.touches && e.touches[0].clientY)) - startY;
+
+        // rotate slightly based on horizontal movement
+        const rotate = (currentX / window.innerWidth) * 30; // up to ~30deg
+        topCard.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotate}deg)`;
+        // fade the card a little when dragged far
+        const opacity = Math.max(0.25, 1 - Math.abs(currentX) / (window.innerWidth * 0.6));
+        topCard.style.opacity = opacity;
+    }
+
+    function pointerUp(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        topCard.classList.remove('dragging');
+
+        // threshold in px
+        const threshold = 150;
+        if (currentX > threshold) {
+            // right swipe => save
+            swipeCardRight(topCard);
+        } else if (currentX < -threshold) {
+            // left swipe => discard
+            swipeCardLeft(topCard);
+        } else {
+            // restore to center
+            topCard.style.transition = 'transform 300ms cubic-bezier(.22,.9,.26,1), opacity 200ms ease';
+            topCard.style.transform = '';
+            topCard.style.opacity = '';
+            // cleanup transition after it's done
+            setTimeout(() => {
+                topCard.style.transition = '';
+            }, 320);
+        }
+
+        // release pointer capture if used
+        if (e.pointerId && topCard.releasePointerCapture) {
+            try { topCard.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        }
+
+        // reset deltas
+        currentX = 0;
+        currentY = 0;
+    }
+
+    // Support both pointer and mouse/touch events robustly
+    topCard.addEventListener('pointerdown', pointerDown);
+    window.addEventListener('pointermove', pointerMove);
+    window.addEventListener('pointerup', pointerUp);
+
+    // Clean up event listeners when card is removed - attach a small observer
+    const observer = new MutationObserver(() => {
+        if (!document.body.contains(topCard)) {
+            // card removed, remove listeners
+            topCard.removeEventListener('pointerdown', pointerDown);
+            window.removeEventListener('pointermove', pointerMove);
+            window.removeEventListener('pointerup', pointerUp);
+            observer.disconnect();
+            // set handlers for the new top card
+            setTopCardPointerHandlers();
+        }
+    });
+    observer.observe(document.getElementById('swipe-container'), { childList: true, subtree: false });
+}
+
+// swipe animations and removal
+function swipeCardRight(card) {
+    if (!card) return;
+    const researcher = card.__researcher;
+    // push to savedResearchers in memory
+    if (researcher) savedResearchers.push(researcher);
+
+    // animate off to right
+    card.classList.add('swipe-off-right');
+
+    // after animation, remove from DOM
+    setTimeout(() => {
+        card.remove();
+        // re-index remaining cards visually
+        reindexStack();
+        // if deck empty show empty state
+        if (document.querySelectorAll('#swipe-container .swipe-card').length === 0) {
+            showSwipeEmptyState();
+        }
+    }, 350);
+}
+
+function swipeCardLeft(card) {
+    if (!card) return;
+    // animate off to left
+    card.classList.add('swipe-off-left');
+
+    setTimeout(() => {
+        card.remove();
+        reindexStack();
+        if (document.querySelectorAll('#swipe-container .swipe-card').length === 0) {
+            showSwipeEmptyState();
+        }
+    }, 350);
+}
+
+// Recalculate data-index attributes so CSS offsets apply correctly
+function reindexStack() {
+    const cards = Array.from(document.querySelectorAll('#swipe-container .swipe-card'));
+    // top card should have data-index="0" and be last in DOM; we keep DOM order but reassign indexes for CSS
+    // compute from bottom to top
+    for (let i = 0; i < cards.length; i++) {
+        const idxFromTop = cards.length - 1 - i;
+        cards[i].setAttribute('data-index', idxFromTop);
+        // reset inline transform/opacity to let CSS control offsets
+        cards[i].style.transform = '';
+        cards[i].style.opacity = '';
+    }
+}
+
+// show empty state
+function showSwipeEmptyState() {
+    const empty = document.getElementById('swipe-empty');
+    if (empty) empty.style.display = 'block';
+    // hide any leftover cards (shouldn't be any)
+    // optionally show saved modal or suggestion to exit
 }
 
 // ===== CHAT PAGE (Mascot Rhett) =====
