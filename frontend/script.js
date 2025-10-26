@@ -51,6 +51,179 @@ export async function initDashboard() {
   renderWordCloud();
   updateDashboardStats();
 }
+export async function initHomeGraph() {
+  console.log("Initializing home page trending topics graph...");
+  const loadingEl = document.getElementById("network-loading");
+  const svg = d3.select("#graph-svg");
+  const container = document.getElementById("graph-container");
+
+  if (!svg.node() || !container) {
+    console.warn("Home graph container not found.");
+    return;
+  }
+
+  loadingEl.style.display = "block";
+
+  try {
+    const res = await fetchAPI("/api/trending");
+    const topics = Array.isArray(res) ? res : res.topics || [];
+
+    if (!topics.length) {
+      loadingEl.textContent = "No trending topics available.";
+      return;
+    }
+
+    const normalized = topics.slice(0, 50).map((t) => ({
+      name: t.topic,
+      value: Number(t.count || 1)
+    }));
+
+    // Tokenize for clustering
+    const tokenize = (s) =>
+      s.toLowerCase().replace(/[^\w\s]/g, " ").split(/\s+/).filter(Boolean);
+    const topicObjs = normalized.map((d) => ({
+      name: d.name,
+      value: d.value,
+      tokens: new Set(tokenize(d.name))
+    }));
+
+    function jaccard(aSet, bSet) {
+      const inter = [...aSet].filter((x) => bSet.has(x)).length;
+      const union = new Set([...aSet, ...bSet]).size || 1;
+      return inter / union;
+    }
+
+    // Build links (edges)
+    const links = [];
+    for (let i = 0; i < topicObjs.length; i++) {
+      for (let j = i + 1; j < topicObjs.length; j++) {
+        const s = jaccard(topicObjs[i].tokens, topicObjs[j].tokens);
+        if (s > 0.18) links.push({ source: i, target: j, weight: s });
+      }
+    }
+
+    // Cluster assignment
+    const clusters = [];
+const clusterAssign = new Array(topicObjs.length).fill(-1);
+const CLUSTER_SIM_THRESHOLD = 0.25;
+
+topicObjs.forEach((node, idx) => {
+  let assigned = false;
+  for (let c = 0; c < clusters.length; c++) {
+    const sim = jaccard(node.tokens, clusters[c].centroid);
+    if (sim >= CLUSTER_SIM_THRESHOLD) {
+      clusters[c].members.push(idx);
+      node.tokens.forEach((t) => clusters[c].centroid.add(t));
+      clusterAssign[idx] = c;
+      assigned = true;
+      break;
+    }
+  }
+  if (!assigned) {
+    clusters.push({ centroid: new Set(node.tokens), members: [idx] });
+    clusterAssign[idx] = clusters.length - 1;
+  }
+});
+
+// --- Only assign same color to groups with >1 members ---
+const pastelPalette = [
+  "#c7e9f1",
+  "#e9d5ff",
+  "#ffe7c7",
+  "#e2f7d5",
+  "#fbe4f2",
+  "#f0f9ff",
+  "#fef3c7"
+];
+
+// Neutral gray for singletons (non-clustered topics)
+const neutralColor = "#e5e7eb";
+
+const clusterColor = (idx) => {
+  const cluster = clusters[idx];
+  if (!cluster || cluster.members.length <= 1) return neutralColor;
+  return pastelPalette[idx % pastelPalette.length];
+};
+
+    svg.selectAll("*").remove();
+
+    const width = parseInt(svg.style("width")) || 1200;
+    const height = parseInt(svg.style("height")) || 600;
+
+    const values = topicObjs.map((t) => t.value);
+    const rScale = d3.scaleSqrt()
+      .domain([Math.min(...values), Math.max(...values)])
+      .range([10, 42]);
+
+    const simulation = d3
+      .forceSimulation(topicObjs)
+      .force("link", d3.forceLink(links).id((d, i) => i).distance((d) => 120 - d.weight * 80).strength((d) => d.weight * 0.9))
+      .force("charge", d3.forceManyBody().strength(-150))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("collide", d3.forceCollide().radius((d) => rScale(d.value) + 20))
+      .alphaDecay(0.02)
+      .on("tick", ticked);
+
+    const linkG = svg.append("g").attr("class", "links");
+    const link = linkG
+      .selectAll("line")
+      .data(links)
+      .enter()
+      .append("line")
+      .attr("class", "link-line")
+      .attr("stroke-width", (d) => Math.max(1, d.weight * 2));
+
+    const nodeG = svg.append("g").attr("class", "nodes");
+    const node = nodeG
+      .selectAll("g")
+      .data(topicObjs)
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .call(d3.drag()
+        .on("start", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+        .on("drag", (event, d) => {
+          d.fx = event.x;
+          d.fy = event.y;
+        })
+        .on("end", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        })
+      );
+
+    node
+      .append("circle")
+      .attr("class", "node-circle")
+      .attr("r", (d) => rScale(d.value))
+      .attr("fill", (d, i) => clusterColor(clusterAssign[i]));
+
+    node
+      .append("text")
+      .attr("class", "node-label")
+      .attr("dy", (d) => -rScale(d.value) - 6)
+      .text((d) => d.name);
+
+    function ticked() {
+      link
+        .attr("x1", (d) => d.source.x)
+        .attr("y1", (d) => d.source.y)
+        .attr("x2", (d) => d.target.x)
+        .attr("y2", (d) => d.target.y);
+      node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+    }
+
+    loadingEl.style.display = "none";
+  } catch (error) {
+    console.error("Error rendering home graph:", error);
+    loadingEl.textContent = "Failed to load topics.";
+  }
+}
 
 async function renderTopicNetwork() {
   const loadingEl = document.getElementById('network-loading');

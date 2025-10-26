@@ -229,6 +229,14 @@
                 </div>
             </div>
         </div>
+        <section class="home-graph-section">
+            <h2 class="home-graph-title">Trending Research Topics</h2>
+            <p class="home-graph-subtitle">Explore what’s buzzing in AI right now</p>
+            <div id="graph-container">
+                <svg id="graph-svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet"></svg>
+                <div id="network-loading" class="loading">Loading trending topics...</div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -300,6 +308,11 @@
                 welcomeMsg.textContent = `As a ${rstiType} researcher, you're ready to make an impact!`;
             }
         }
+    </script>
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initHomeGraph } from './script.js';
+        initHomeGraph(); // run graph on home page
     </script>
 </body>
 </html>
