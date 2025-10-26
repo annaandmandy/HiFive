@@ -297,6 +297,95 @@ async def chat(request: ChatRequest):
         }
 
 # -------------------------
+# RSTI PhD ADVISOR ENDPOINT
+# -------------------------
+class RSTIAdvisorRequest(BaseModel):
+    rsti_type: str
+    major: Optional[str] = None
+    conversation_history: List[dict] = []
+    choice: Optional[str] = None  # "1" or "2" for binary choice
+
+@app.post("/api/rsti-advisor")
+async def rsti_advisor(request: RSTIAdvisorRequest):
+    """
+    RSTI-based PhD advisor that asks binary questions to guide research direction.
+    """
+    try:
+        client = OpenAI(api_key=OPENAI_API_KEY)
+
+        # Initialize conversation if this is the first call
+        if not request.conversation_history:
+            major = request.major or "your field"
+            messages = [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are Mascot Rhett, Boston University's terrier mascot turned AI research guide. "
+                        "Your voice is playful, curious, and supportive—think wagging tail energy, clever canine metaphors, and light BU references. "
+                        "You are acting like an academic advisor helping a student choose a PhD research direction "
+                        "through a maximum of 3 binary (1/2) choices. "
+                        "Each round, ask a short question (<=3 lines) with exactly two numbered options. "
+                        "At the end, summarize the most suitable PhD field in 3–5 sentences, "
+                        "explicitly combining the student's academic background and their previous choices. "
+                        "When you provide the final recommendation, start with '🎯 Final Recommendation:' and provide exactly 3 specific research topics/areas."
+                    ),
+                },
+                {"role": "user", "content": f"My academic background is {major} and my RSTI type is {request.rsti_type}. Let's begin."},
+            ]
+        else:
+            # Continue existing conversation
+            messages = request.conversation_history.copy()
+
+            # Add user's choice if provided
+            if request.choice:
+                messages.append({"role": "user", "content": f"I choose option {request.choice}."})
+
+        # Get response from OpenAI
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            temperature=0.7,
+        )
+
+        reply = response.choices[0].message.content.strip()
+
+        # Add assistant's reply to messages
+        messages.append({"role": "assistant", "content": reply})
+
+        # Check if this is the final recommendation
+        is_final = "🎯" in reply or ("Final" in reply and "Recommendation" in reply)
+
+        # Extract recommended topics if final
+        recommended_topics = []
+        if is_final:
+            # Try to extract 3 topics from the response
+            # This is a simple extraction - you might want to improve this
+            lines = reply.split('\n')
+            for line in lines:
+                line = line.strip()
+                if line and (line[0].isdigit() or line.startswith('-') or line.startswith('•')):
+                    # Remove numbering/bullets
+                    topic = line.lstrip('0123456789.-•) ').strip()
+                    if topic and len(recommended_topics) < 3:
+                        recommended_topics.append(topic)
+
+        return {
+            "reply": reply,
+            "conversation_history": messages,
+            "is_final": is_final,
+            "recommended_topics": recommended_topics if is_final else []
+        }
+
+    except Exception as e:
+        print(f"Error in RSTI advisor: {e}")
+        return {
+            "reply": "Woof! My tail got tangled for a moment. Let me help you explore research directions in AI and machine learning!",
+            "conversation_history": request.conversation_history,
+            "is_final": False,
+            "recommended_topics": []
+        }
+
+# -------------------------
 # LOOT BOX ENDPOINT
 # -------------------------
 @app.get("/api/lootbox")

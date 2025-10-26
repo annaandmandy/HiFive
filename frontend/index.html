@@ -17,6 +17,7 @@
                 <li><a href="people.html">Researchers</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="chat.html">Chat with Rhett</a></li>
+                <li><a href="lootbox.html">Loot Box</a></li>
             </ul>
         </div>
     </nav>
@@ -87,6 +88,7 @@
                 <div class="cta-buttons">
                     <a href="people.html" class="btn btn-primary">Find Researchers</a>
                     <a href="chat.html" class="btn btn-secondary">Chat with Rhett</a>
+                    <button id="retakeRSTI" class="btn btn-secondary" style="background: var(--warning-color);">Retake RSTI Test</button>
                 </div>
             </div>
         </section>
@@ -96,10 +98,29 @@
         <p>&copy; 2025 Research Dashboard | Powered by OpenAlex & OpenAI</p>
     </footer>
 
-    <script type="module" src="script.js"></script>
     <script type="module">
         import { initDashboard } from './script.js';
-        initDashboard();
+
+        // Check if user has completed RSTI test
+        const rstiResult = localStorage.getItem('RSTI_RESULT');
+        if (!rstiResult) {
+            // Redirect to RSTI test if not completed
+            window.location.href = 'rsti.html';
+        } else {
+            initDashboard();
+
+            // Add retake RSTI button handler
+            const retakeBtn = document.getElementById('retakeRSTI');
+            if (retakeBtn) {
+                retakeBtn.addEventListener('click', () => {
+                    // Clear RSTI result from localStorage
+                    localStorage.removeItem('RSTI_RESULT');
+                    localStorage.removeItem('RSTI_CHAT_COMPLETE');
+                    // Navigate to RSTI test
+                    window.location.href = 'rsti.html';
+                });
+            }
+        }
     </script>
 </body>
 </html>

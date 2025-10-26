@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(for file in people.html chat.html projects.html lootbox.html rsti.html)",
+      "Bash(do)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
