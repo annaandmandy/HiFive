@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Research Dashboard - Home</title>
+
+  <!-- Global styles (do not change) -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Page-specific -->
+  <link rel="stylesheet" href="index.css">
+
+  <!-- D3 for the network graph -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">Research Dashboard</h1>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html" class="active">Research Trends</a></li>
+        <li><a href="people.html">Researchers</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="chat.html">Chat with Rhett</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <h2>Discover Hot AI Topics & Research Trends</h2>
+      <p>Explore trending research areas, visualize topic evolution, and connect with leading researchers</p>
+    </section>
+
+    <section class="dashboard">
+      <div class="dashboard-grid">
+        <div class="card network-card">
+          <div class="card-header">
+            <h3>Trending Topics Network</h3>
+            <p>Nodes sized by frequency. Related topics are connected and grouped by similarity.</p>
+          </div>
+          <div class="card-body">
+            <!-- Graph container -->
+            <div id="graph-container">
+              <svg id="graph-svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet"></svg>
+              <div id="network-loading" class="loading">Loading network...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📚</div>
+          <div class="stat-content">
+            <h4 id="stat-topics">-</h4>
+            <p>Trending Topics</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <h4 id="stat-researchers">-</h4>
+            <p>Active Researchers</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔬</div>
+          <div class="stat-content">
+            <h4 id="stat-papers">-</h4>
+            <p>Recent Papers</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <h3>Ready to explore?</h3>
+        <div class="cta-buttons">
+          <a href="people.html" class="btn btn-primary">Find Researchers</a>
+          <a href="chat.html" class="btn btn-secondary">Chat with Rhett</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+  <script type="module">
+    import { initDashboard } from './script.js';
+    initDashboard();
+  </script>
+</body>
+</html>

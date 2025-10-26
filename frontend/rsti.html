@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSTI - Researcher Personality Indicator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* RSTI Specific Styles - Aligned with global styles */
+        .rsti-hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .rsti-hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rsti-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .rsti-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--light-color);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+        }
+
+        .question:last-of-type {
+            border: none;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+            color: var(--dark-color);
+        }
+
+        .scale {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .choice {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .choice.big {
+            width: 48px;
+            height: 48px;
+        }
+
+        .choice.medium {
+            width: 42px;
+            height: 42px;
+        }
+
+        .choice:hover {
+            transform: scale(1.1);
+            border-color: var(--primary-color);
+        }
+
+        .choice.agree {
+            border-color: var(--primary-color);
+        }
+
+        .choice.disagree {
+            border-color: var(--danger-color);
+        }
+
+        .choice.active.agree {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .choice.active.disagree {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .choice.active.neutral {
+            background: var(--text-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        .labels {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.8rem 8% 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .submit-btn {
+            margin-top: 2rem;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.9rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .result h2 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-size: 1.8rem;
+        }
+
+        .result p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .meter-container {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .meter-label {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        .meter {
+            height: 8px;
+            background: var(--light-color);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .meter i {
+            display: block;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .explore-btn {
+            margin-top: 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.9rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--primary-color);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .explore-btn:hover {
+            background: var(--secondary-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 768px) {
+            .rsti-hero h2 {
+                font-size: 2rem;
+            }
+
+            .scale {
+                gap: 8px;
+            }
+
+            .choice {
+                width: 32px;
+                height: 32px;
+            }
+
+            .choice.big {
+                width: 42px;
+                height: 42px;
+            }
+
+            .choice.medium {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="rsti-hero">
+            <h2>RSTI - Researcher Personality Indicator</h2>
+            <p>Discover your research archetype in just 8 questions</p>
+        </section>
+
+        <div class="rsti-card">
+            <div class="progress-bar">
+                <span id="bar"></span>
+            </div>
+
+            <div id="questions"></div>
+
+            <button id="submit" class="submit-btn" disabled>See My RSTI Type</button>
+
+            <div id="result" class="result" hidden>
+                <h2 id="type">RSTI: —</h2>
+                <p id="desc"></p>
+                <div id="meters"></div>
+                <button id="explore" class="explore-btn">Explore My Research Topic →</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script>
+        const DIMENSIONS = {
+            BD: { l: "B", r: "D", name: "Blueprint vs. Disruptive" },
+            UN: { l: "U", r: "N", name: "Unified vs. Nomadic" },
+            CR: { l: "C", r: "R", name: "Causal vs. Relational" },
+            SK: { l: "S", r: "K", name: "Systematic vs. Kinetic" }
+        };
+
+        const QUESTIONS = {
+            BD: [
+                "I prefer refining existing frameworks rather than overturning them.",
+                "Before starting a project, I map out clear milestones."
+            ],
+            UN: [
+                "I try to connect my findings into one coherent theory.",
+                "I often wander across disciplines to see what links might emerge."
+            ],
+            CR: [
+                "Understanding why something happens matters more than predicting when.",
+                "I believe uncovering mechanisms is the highest form of research."
+            ],
+            SK: [
+                "I meticulously document every procedural step.",
+                "I get restless when progress feels too slow or rigid."
+            ]
+        };
+
+        const container = document.getElementById("questions");
+        let index = 0;
+
+        for (const [dim, arr] of Object.entries(QUESTIONS)) {
+            arr.forEach((text, i) => {
+                index++;
+                const div = document.createElement("div");
+                div.className = "question";
+                div.dataset.dim = dim;
+                div.dataset.dir = (i % 2 === 0 ? 1 : -1);
+                div.innerHTML = `
+                    <div class="question-text">${index}. ${text}</div>
+                    <div class="scale">
+                        ${["agree", "agree", "agree", "neutral", "disagree", "disagree", "disagree"].map((side, j) => {
+                            const size = j === 0 || j === 6 ? "big" : j === 1 || j === 5 ? "medium" : "";
+                            return `<div class="choice ${size} ${side}" data-val="${j < 3 ? j + 1 : j > 3 ? -(j - 3) : 0}"></div>`;
+                        }).join("")}
+                    </div>
+                    <div class="labels">
+                        <span>Strongly Agree</span>
+                        <span>Strongly Disagree</span>
+                    </div>`;
+                container.appendChild(div);
+            });
+        }
+
+        const bar = document.getElementById("bar");
+        const total = document.querySelectorAll(".question").length;
+        const submit = document.getElementById("submit");
+
+        function updateProgress() {
+            const answered = document.querySelectorAll(".choice.active").length;
+            const pct = Math.min(100, Math.round(answered / total * 100));
+            bar.style.width = pct + "%";
+            submit.disabled = answered < total;
+        }
+
+        document.body.addEventListener("click", e => {
+            if (e.target.classList.contains("choice")) {
+                const parent = e.target.closest(".scale");
+                parent.querySelectorAll(".choice").forEach(c => c.classList.remove("active"));
+                e.target.classList.add("active");
+                updateProgress();
+            }
+        });
+
+        submit.onclick = () => {
+            const scores = { BD: 0, UN: 0, CR: 0, SK: 0 };
+            document.querySelectorAll(".question").forEach(q => {
+                const dim = q.dataset.dim;
+                const dir = Number(q.dataset.dir);
+                const active = q.querySelector(".choice.active");
+                if (!active) return;
+                const val = Number(active.dataset.val);
+                scores[dim] += val * dir;
+            });
+
+            let type = "";
+            for (const [dim, obj] of Object.entries(DIMENSIONS)) {
+                type += scores[dim] >= 0 ? obj.l : obj.r;
+            }
+
+            const result = document.getElementById("result");
+            document.getElementById("type").innerHTML = `Your RSTI type is: <span style="color: var(--primary-color); font-weight: 800;">${type}</span>`;
+            document.getElementById("desc").textContent = "Your profile reflects your natural research archetype.";
+
+            const meters = document.getElementById("meters");
+            meters.innerHTML = "";
+
+            for (const [dim, obj] of Object.entries(DIMENSIONS)) {
+                const pct = Math.min(100, Math.round(Math.abs(scores[dim]) / 15 * 100));
+                const m = document.createElement("div");
+                m.className = "meter-container";
+                m.innerHTML = `
+                    <div class="meter-label">${obj.name} — ${scores[dim] >= 0 ? obj.l : obj.r}</div>
+                    <div class="meter"><i style="width:${pct}%"></i></div>`;
+                meters.appendChild(m);
+            }
+
+            localStorage.setItem("RSTI_RESULT", JSON.stringify({
+                type,
+                scores,
+                date: new Date().toISOString()
+            }));
+
+            document.getElementById("explore").onclick = () => {
+                // Mark that user is starting RSTI-based chat
+                localStorage.setItem('RSTI_START_CHAT', 'true');
+                location.href = `chat.html`;
+            };
+
+            result.hidden = false;
+            result.scrollIntoView({ behavior: "smooth" });
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+/* people-swipe.css */
+/* Keeps palette and typography consistent with styles.css */
+
+/* Swipe section */
+.card-swipe-section {
+    margin-top: 1.5rem;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.swipe-controls {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.swipe-container {
+    width: 100%;
+    max-width: 900px;
+    height: 40vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* Empty state */
+.swipe-empty {
+    text-align: center;
+}
+
+/* Card styling */
+.swipe-card {
+    position: absolute;
+    width: 75%;
+    height: 70%;
+    max-width: 760px;
+    max-height: 620px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 15px rgba(0, 0, 0, 0.05);
+    border: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+    transition: transform 300ms cubic-bezier(.22,.9,.26,1), opacity 250ms ease, box-shadow 200ms ease;
+    will-change: transform;
+    cursor: grab;
+    touch-action: none; /* allow us to handle touch gestures */
+    user-select: none;
+}
+
+.swipe-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* While dragging */
+.swipe-card.dragging {
+    transition: none;
+    cursor: grabbing;
+}
+
+/* Slight content layout similar to researcher-card but larger */
+.swipe-card .card-top {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.swipe-card .swipe-avatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.swipe-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+    color: var(--dark-color);
+}
+
+.swipe-card .affiliation {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.swipe-card .topics {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.swipe-card .topic-tag {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+/* Stats row */
+.swipe-card .stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    color: var(--text-secondary);
+}
+
+.swipe-card .stat strong {
+    color: var(--dark-color);
+    font-size: 1.05rem;
+}
+
+/* View profile button */
+.swipe-card .swipe-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Stacked offset for behind cards */
+.swipe-card[data-index="1"] {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0.95;
+}
+.swipe-card[data-index="2"] {
+    transform: translateY(14px) scale(0.96);
+    opacity: 0.9;
+}
+.swipe-card[data-index="3"] {
+    transform: translateY(20px) scale(0.94);
+    opacity: 0.85;
+}
+
+/* Swipe off-screen helpers */
+.swipe-off-left {
+    transform: translateX(-1500px) rotate(-30deg) !important;
+    opacity: 0 !important;
+}
+
+.swipe-off-right {
+    transform: translateX(1500px) rotate(30deg) !important;
+    opacity: 0 !important;
+}
+
+/* Modal saved list */
+.saved-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.saved-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(2px);
+}
+
+.saved-modal-content {
+    position: relative;
+    z-index: 2001;
+    width: 90%;
+    max-width: 900px;
+    padding: 1.25rem;
+}
+
+/* Saved list rows */
+.saved-list .saved-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #fff;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.saved-row .left {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.saved-row h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--dark-color);
+}
+
+.saved-row .meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+    .swipe-card {
+        width: 92%;
+        height: 68%;
+    }
+    .swipe-container {
+        height: 58vh;
+    }
+}

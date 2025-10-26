@@ -13,6 +13,7 @@
             <h1 class="logo">Research Dashboard</h1>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
+                <li><a href="research.html">Research Trends</a></li>
                 <li><a href="people.html">Researchers</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="chat.html" class="active">Chat with Rhett</a></li>
@@ -95,7 +96,65 @@
     <script type="module" src="script.js"></script>
     <script type="module">
         import { initChatPage } from './script.js';
-        initChatPage();
+        import { initRSTIChat, addBinaryChoiceButtons } from './rsti-chat.js';
+
+        // Check if starting RSTI-based chat
+        const rstiStartChat = localStorage.getItem('RSTI_START_CHAT');
+
+        if (rstiStartChat === 'true') {
+            // Remove the flag
+            localStorage.removeItem('RSTI_START_CHAT');
+
+            // Initialize RSTI chat mode
+            initRSTIChat().then((handler) => {
+                if (handler) {
+                    // Add binary choice buttons
+                    addBinaryChoiceButtons(async (choice) => {
+                        const result = await handler.handleChoice(choice);
+
+                        if (result.isComplete && result.topics && result.topics.length > 0) {
+                            // Mark RSTI chat as complete
+                            localStorage.setItem('RSTI_CHAT_COMPLETE', 'true');
+                            localStorage.setItem('RSTI_RECOMMENDED_TOPICS', JSON.stringify(result.topics));
+
+                            // Update the example chips with recommended topics
+                            updateExampleChips(result.topics);
+
+                            // Switch to normal chat mode
+                            initChatPage();
+                        }
+
+                        return result;
+                    });
+                }
+            });
+        } else {
+            // Normal chat mode
+            initChatPage();
+
+            // Check if we have recommended topics to show
+            const recommendedTopics = localStorage.getItem('RSTI_RECOMMENDED_TOPICS');
+            if (recommendedTopics) {
+                try {
+                    const topics = JSON.parse(recommendedTopics);
+                    if (topics && topics.length > 0) {
+                        updateExampleChips(topics);
+                    }
+                } catch (e) {
+                    console.error('Error parsing recommended topics:', e);
+                }
+            }
+        }
+
+        function updateExampleChips(topics) {
+            const chips = document.querySelectorAll('.example-chip');
+            topics.forEach((topic, index) => {
+                if (chips[index]) {
+                    chips[index].textContent = topic;
+                    chips[index].setAttribute('data-query', `Tell me about ${topic}`);
+                }
+            });
+        }
     </script>
 </body>
 </html>

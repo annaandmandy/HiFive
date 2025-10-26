@@ -5,8 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Research Dashboard - Home</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+    <style>
+        body {
+            background: #fafafa;
+        }
+
+        .home-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 120px);
+            padding: 2rem;
+        }
+
+        .home-welcome-container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .rhett-image-large {
+            width: 350px;
+            height: 350px;
+            object-fit: contain;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .home-greeting {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .home-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .profile-summary {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .profile-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-badge-label {
+            opacity: 0.9;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .action-chips {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            width: 100%;
+        }
+
+        .chip-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-chip {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: var(--shadow-sm);
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .action-chip:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-chip.primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+        }
+
+        .action-chip.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-chip.warning {
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        .action-chip.warning:hover {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .dimensions-quick {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .dimension-letter {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .rhett-image-large {
+                width: 250px;
+                height: 250px;
+            }
+
+            .home-greeting {
+                font-size: 2rem;
+            }
+
+            .home-subtitle {
+                font-size: 1rem;
+            }
+
+            .action-chip {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .chip-row {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -14,6 +182,7 @@
             <h1 class="logo">Research Dashboard</h1>
             <ul class="nav-menu">
                 <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="research.html">Research Trends</a></li>
                 <li><a href="people.html">Researchers</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="chat.html">Chat with Rhett</a></li>
@@ -21,85 +190,116 @@
         </div>
     </nav>
 
-    <main class="container">
-        <section class="hero">
-            <h2>Discover Hot AI Topics & Research Trends</h2>
-            <p>Explore trending research areas, visualize topic evolution, and connect with leading researchers</p>
-        </section>
+    <main class="home-main">
+        <div class="home-welcome-container">
+            <img src="assets/rhett-removebg-preview.png" alt="Rhett the Mascot" class="rhett-image-large">
+            <h2 class="home-greeting">Welcome Back!</h2>
+            <p class="home-subtitle" id="welcome-message">Ready to discover your next big research breakthrough?</p>
 
-        <section class="dashboard">
-            <div class="dashboard-grid">
-                <!-- Word Cloud Section -->
-                <div class="card wordcloud-card">
-                    <div class="card-header">
-                        <h3>Trending AI Topics</h3>
-                        <p>Most discussed research areas</p>
-                    </div>
-                    <div class="card-body">
-                        <div id="wordcloud-container">
-                            <canvas id="wordcloud"></canvas>
-                        </div>
-                        <div id="wordcloud-loading" class="loading">Loading word cloud...</div>
-                    </div>
+            <div class="profile-summary">
+                <div class="profile-badge">
+                    <span class="profile-badge-label">Major:</span>
+                    <span id="user-major">-</span>
                 </div>
-
-                <!-- Trending Chart Section -->
-                <div class="card chart-card">
-                    <div class="card-header">
-                        <h3>Topic Frequency</h3>
-                        <p>Research activity by topic</p>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="trending-chart"></canvas>
-                        <div id="chart-loading" class="loading">Loading chart...</div>
-                    </div>
+                <div class="profile-badge">
+                    <span class="profile-badge-label">RSTI:</span>
+                    <span id="user-rsti">-</span>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">📚</div>
-                    <div class="stat-content">
-                        <h4 id="stat-topics">-</h4>
-                        <p>Trending Topics</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">👥</div>
-                    <div class="stat-content">
-                        <h4 id="stat-researchers">-</h4>
-                        <p>Active Researchers</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔬</div>
-                    <div class="stat-content">
-                        <h4 id="stat-papers">-</h4>
-                        <p>Recent Papers</p>
-                    </div>
-                </div>
+            <div class="dimensions-quick" id="dimensions-quick">
+                <!-- Dimensions will be shown here -->
             </div>
 
-            <!-- Call to Action -->
-            <div class="cta-section">
-                <h3>Ready to explore?</h3>
-                <div class="cta-buttons">
-                    <a href="people.html" class="btn btn-primary">Find Researchers</a>
-                    <a href="chat.html" class="btn btn-secondary">Chat with Rhett</a>
+            <div class="action-chips">
+                <div class="chip-row">
+                    <a href="chat.html" class="action-chip primary">Chat with Rhett</a>
+                    <a href="research.html" class="action-chip">Research Trends</a>
+                </div>
+                <div class="chip-row">
+                    <a href="people.html" class="action-chip">Find Researchers</a>
+                    <a href="projects.html" class="action-chip">View Projects</a>
+                </div>
+                <div class="chip-row">
+                    <a href="lootbox.html" class="action-chip">Try Loot Box 🎁</a>
+                    <a href="lifepath.html" class="action-chip">Life Path Generator 🎮</a>
+                </div>
+                <div class="chip-row">
+                    <button id="retakeRSTI" class="action-chip warning">Retake RSTI Test</button>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer>
         <p>&copy; 2025 Research Dashboard | Powered by OpenAlex & OpenAI</p>
     </footer>
 
-    <script type="module" src="script.js"></script>
     <script type="module">
-        import { initDashboard } from './script.js';
-        initDashboard();
+        // Check if user has completed RSTI test
+        const rstiResult = localStorage.getItem('RSTI_RESULT');
+        if (!rstiResult) {
+            // Redirect to RSTI test if not completed
+            window.location.href = 'rsti.html';
+        } else {
+            // Load and display user profile
+            loadUserProfile();
+
+            // Add retake RSTI button handler
+            const retakeBtn = document.getElementById('retakeRSTI');
+            if (retakeBtn) {
+                retakeBtn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to retake the RSTI test? This will reset your profile.')) {
+                        // Clear RSTI result from localStorage
+                        localStorage.removeItem('RSTI_RESULT');
+                        localStorage.removeItem('RSTI_CHAT_COMPLETE');
+                        localStorage.removeItem('RSTI_RECOMMENDED_TOPICS');
+                        localStorage.removeItem('RSTI_START_CHAT');
+                        localStorage.removeItem('USER_MAJOR');
+                        // Navigate to RSTI test
+                        window.location.href = 'rsti.html';
+                    }
+                });
+            }
+        }
+
+        function loadUserProfile() {
+            const rstiData = JSON.parse(localStorage.getItem('RSTI_RESULT') || '{}');
+
+            // Display RSTI type
+            const rstiType = rstiData.type || 'Unknown';
+            document.getElementById('user-rsti').textContent = rstiType;
+
+            // Display major
+            const major = localStorage.getItem('USER_MAJOR') || 'Not specified';
+            document.getElementById('user-major').textContent = major;
+
+            // Display RSTI dimensions in compact form
+            const scores = rstiData.scores || {};
+            const dimensions = {
+                BD: { name: "Blueprint vs. Disruptive", l: "Blueprint", r: "Disruptive" },
+                UN: { name: "Unified vs. Nomadic", l: "Unified", r: "Nomadic" },
+                CR: { name: "Causal vs. Relational", l: "Causal", r: "Relational" },
+                SK: { name: "Systematic vs. Kinetic", l: "Systematic", r: "Kinetic" }
+            };
+
+            const dimensionsContainer = document.getElementById('dimensions-quick');
+            const dimensionText = [];
+
+            for (const [dim, obj] of Object.entries(dimensions)) {
+                const score = scores[dim] || 0;
+                const value = score >= 0 ? obj.l : obj.r;
+                dimensionText.push(`<span class="dimension-letter">${value}</span>`);
+            }
+
+            dimensionsContainer.innerHTML = dimensionText.join(' • ');
+
+            // Personalize welcome message
+            const welcomeMsg = document.getElementById('welcome-message');
+            if (rstiType && rstiType !== 'Unknown') {
+                welcomeMsg.textContent = `As a ${rstiType} researcher, you're ready to make an impact!`;
+            }
+        }
     </script>
 </body>
 </html>
