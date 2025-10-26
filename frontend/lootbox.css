@@ -1,0 +1,402 @@
+/* ===========================
+   LOOT BOX PAGE STYLES
+   Aligned with global styles.css
+   =========================== */
+
+.lootbox-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.lootbox-hero {
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.lootbox-hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mascot-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1rem;
+    border-radius: var(--radius);
+}
+
+.mascot-icon {
+    font-size: 1.5rem;
+}
+
+.mascot-message p {
+    margin: 0;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+/* ===========================
+   LOOT BOX BUTTON
+   =========================== */
+
+.lootbox-controls {
+    text-align: center;
+    margin: 2.5rem 0;
+}
+
+.lootbox-button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.lootbox-button:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.lootbox-button:active {
+    transform: translateY(0);
+}
+
+.btn-icon, .btn-sparkle {
+    font-size: 1.3rem;
+}
+
+.lootbox-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===========================
+   LOADING STATE
+   =========================== */
+
+.loading-state {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--light-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* ===========================
+   CARDS CONTAINER
+   =========================== */
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+/* ===========================
+   RESEARCH CARDS
+   =========================== */
+
+.research-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    animation: cardAppear 0.5s ease-out;
+    border-left: 4px solid var(--border-color);
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.research-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Card Rarity Border Colors */
+.research-card.ssr {
+    border-left-color: #f59e0b;
+    border-left-width: 5px;
+}
+
+.research-card.sr {
+    border-left-color: #8b5cf6;
+    border-left-width: 5px;
+}
+
+.research-card.r {
+    border-left-color: #3b82f6;
+    border-left-width: 5px;
+}
+
+.research-card.n {
+    border-left-color: #6b7280;
+    border-left-width: 5px;
+}
+
+/* ===========================
+   CARD CONTENT
+   =========================== */
+
+.card-rarity {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-rarity.ssr {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.card-rarity.sr {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.card-rarity.r {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.card-rarity.n {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0.5rem 0 1rem 0;
+    color: var(--dark-color);
+    line-height: 1.5;
+    min-height: 3.3rem;
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.card-year, .card-citations {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.card-citations {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.card-authors {
+    margin: 1rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.card-authors h4 {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.authors-list {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.card-concepts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.concept-tag {
+    background: var(--light-color);
+    color: var(--text-primary);
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius);
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+}
+
+.card-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.card-link:hover {
+    background: var(--secondary-color);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===========================
+   RARITY LEGEND
+   =========================== */
+
+.rarity-legend {
+    margin: 4rem 0 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.rarity-legend h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+    font-size: 1.3rem;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.legend-item {
+    text-align: center;
+}
+
+.legend-badge {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.legend-badge.ssr {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.legend-badge.sr {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.legend-badge.r {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.legend-badge.n {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.legend-item p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 768px) {
+    .lootbox-hero h2 {
+        font-size: 2rem;
+    }
+
+    .lootbox-button {
+        padding: 0.9rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+
+    .legend-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .lootbox-hero h2 {
+        font-size: 1.5rem;
+    }
+
+    .mascot-message {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .legend-grid {
+        grid-template-columns: 1fr;
+    }
+}
