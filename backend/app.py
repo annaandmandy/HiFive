@@ -51,12 +51,18 @@ async def get_wordcloud():
 async def get_trending():
     """
     Returns trending topics with their counts
+    Format: [{"topic": "name", "count": 123}, ...]
     """
     try:
-        # Try to get real data from OpenAlex
-        data = await get_trending_topics(mode="counts")
+        # Try to get real data from OpenAlex in wordcloud mode (which returns proper format)
+        data = await get_trending_topics(mode="wordcloud")
         if data:
-            return data
+            # Convert from {"text": ..., "value": ...} to {"topic": ..., "count": ...}
+            formatted_data = [
+                {"topic": item["text"], "count": item["value"]}
+                for item in data
+            ]
+            return formatted_data
     except Exception as e:
         print(f"Error fetching trending data: {e}")
 

@@ -33,20 +33,26 @@ def get_mock_wordcloud():
     ]
 
 def get_mock_trending():
-    """Returns mock trending topics with counts"""
-    return {
-        "topics": [
-            "Large Language Models",
-            "Multimodal Learning",
-            "AI Safety",
-            "Diffusion Models",
-            "Vision-Language Models",
-            "Reinforcement Learning",
-            "Agent Systems",
-            "Few-Shot Learning"
-        ],
-        "counts": [150, 130, 120, 95, 65, 110, 60, 85]
-    }
+    """Returns mock trending topics with counts
+    Format: [{"topic": "name", "count": 123}, ...]
+    """
+    return [
+        {"topic": "Large Language Models", "count": 150},
+        {"topic": "Multimodal Learning", "count": 130},
+        {"topic": "AI Safety", "count": 120},
+        {"topic": "Reinforcement Learning", "count": 110},
+        {"topic": "Computer Vision", "count": 105},
+        {"topic": "Diffusion Models", "count": 95},
+        {"topic": "Natural Language Processing", "count": 90},
+        {"topic": "Few-Shot Learning", "count": 85},
+        {"topic": "Neural Networks", "count": 80},
+        {"topic": "Deep Learning", "count": 78},
+        {"topic": "Generative AI", "count": 75},
+        {"topic": "Vision-Language Models", "count": 65},
+        {"topic": "Agent Systems", "count": 60},
+        {"topic": "Meta-Learning", "count": 58},
+        {"topic": "Explainable AI", "count": 55},
+    ]
 
 def get_mock_researchers():
     """Returns mock researcher data"""

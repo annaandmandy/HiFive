@@ -24,6 +24,7 @@ async function fetchAPI(endpoint, options = {}) {
 export async function initDashboard() {
   console.log('Initializing dashboard...');
   renderTopicNetwork();
+  renderWordCloud();
   updateDashboardStats();
 }
 
@@ -354,7 +355,139 @@ async function renderTopicNetwork() {
 }
 
 /* -------------------------
-   Dashboard stats 
+   Word Cloud Visualization
+   ------------------------- */
+async function renderWordCloud() {
+  const loadingEl = document.getElementById('wordcloud-loading');
+  if (!loadingEl) return;
+
+  loadingEl.style.display = 'block';
+
+  let topics = [];
+  try {
+    const res = await fetchAPI('/api/trending');
+    // Accept either array or { topics: [...] } shapes
+    if (Array.isArray(res)) topics = res;
+    else if (res && Array.isArray(res.topics)) topics = res.topics;
+    else if (res && Array.isArray(res.data)) topics = res.data;
+    else {
+      // If backend returns object with counts, attempt to coerce
+      if (res && typeof res === 'object') {
+        // Try to extract a list-like value
+        const vals = Object.values(res).find(v => Array.isArray(v));
+        if (Array.isArray(vals)) topics = vals;
+      }
+    }
+  } catch (err) {
+    console.warn('Trending API failed for word cloud — using mock topics.');
+    topics = [
+      { topic: "Large Language Models", count: 150 },
+      { topic: "AI Safety", count: 120 },
+      { topic: "Computer Vision", count: 100 },
+      { topic: "Reinforcement Learning", count: 80 },
+      { topic: "Prompt Engineering", count: 70 },
+      { topic: "Optimization", count: 65 },
+      { topic: "Bias & Fairness", count: 60 },
+      { topic: "Diffusion Models", count: 55 },
+      { topic: "Quantum AI", count: 50 },
+      { topic: "Transformers", count: 45 },
+      { topic: "Neural Networks", count: 40 },
+      { topic: "Data Efficiency", count: 35 },
+      { topic: "AI Ethics", count: 30 },
+      { topic: "Causal Inference", count: 28 },
+      { topic: "Autonomous Agents", count: 25 },
+      { topic: "Speech Recognition", count: 24 },
+      { topic: "Graph Neural Networks", count: 22 },
+      { topic: "Representation Learning", count: 20 },
+      { topic: "AI Governance", count: 18 },
+      { topic: "Federated Learning", count: 15 },
+    ];
+  }
+
+  // Normalize incoming items to {text, size}
+  const normalized = topics.slice(0, 50).map((t) => {
+    if (typeof t === 'string') return { text: t, size: 20 };
+    return {
+      text: t.topic || t.name || t.label || t.id || 'Unknown',
+      size: Number(t.count || t.value || t.freq || 10)
+    };
+  });
+
+  if (!normalized.length) {
+    loadingEl.textContent = 'No topics available for word cloud.';
+    return;
+  }
+
+  // Color palette
+  const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+
+  // Setup SVG
+  const svg = d3.select('#wordcloud-svg');
+  svg.selectAll('*').remove();
+
+  const width = parseInt(svg.style('width')) || 1200;
+  const height = parseInt(svg.style('height')) || 500;
+
+  const g = svg.append('g')
+    .attr('transform', `translate(${width / 2},${height / 2})`);
+
+  // Create word cloud layout
+  const layout = d3.layout.cloud()
+    .size([width, height])
+    .words(normalized)
+    .padding(5)
+    .rotate(() => (~~(Math.random() * 2) * 90)) // 0 or 90 degrees
+    .font('Inter, system-ui, sans-serif')
+    .fontSize(d => Math.sqrt(d.size) * 8) // Scale font size by sqrt of count
+    .on('end', draw);
+
+  layout.start();
+
+  function draw(words) {
+    g.selectAll('text')
+      .data(words)
+      .enter()
+      .append('text')
+      .style('font-size', d => d.size + 'px')
+      .style('font-family', 'Inter, system-ui, sans-serif')
+      .style('font-weight', '600')
+      .style('fill', (d, i) => colorScale(i))
+      .style('cursor', 'pointer')
+      .attr('text-anchor', 'middle')
+      .attr('transform', d => `translate(${d.x},${d.y})rotate(${d.rotate})`)
+      .text(d => d.text)
+      .on('mouseover', function() {
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .style('opacity', 0.7)
+          .style('font-weight', '700');
+      })
+      .on('mouseout', function() {
+        d3.select(this)
+          .transition()
+          .duration(150)
+          .style('opacity', 1)
+          .style('font-weight', '600');
+      })
+      .on('click', (event, d) => {
+        // Navigate to people page filtered by this topic
+        window.location.href = `people.html?topic=${encodeURIComponent(d.text)}`;
+      });
+
+    loadingEl.style.display = 'none';
+  }
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    const newWidth = parseInt(svg.style('width')) || 1200;
+    const newHeight = parseInt(svg.style('height')) || 500;
+    g.attr('transform', `translate(${newWidth / 2},${newHeight / 2})`);
+  });
+}
+
+/* -------------------------
+   Dashboard stats
    ------------------------- */
 function updateDashboardStats() {
   const trendingTopics = ["Deep Learning", "NLP", "Computer Vision", "AI Safety"];

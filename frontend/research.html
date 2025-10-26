@@ -13,6 +13,8 @@
 
   <!-- D3 for the network graph -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- D3 Cloud for word cloud -->
+  <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.7/build/d3.layout.cloud.min.js"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -47,30 +49,6 @@
               <svg id="graph-svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet"></svg>
               <div id="network-loading" class="loading">Loading network...</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-content">
-            <h4 id="stat-topics">-</h4>
-            <p>Trending Topics</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-content">
-            <h4 id="stat-researchers">-</h4>
-            <p>Active Researchers</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🔬</div>
-          <div class="stat-content">
-            <h4 id="stat-papers">-</h4>
-            <p>Recent Papers</p>
           </div>
         </div>
       </div>
