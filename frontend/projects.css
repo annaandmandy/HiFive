@@ -467,11 +467,12 @@
 }
 
 .project-heading {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
+    display: block;
+}
+
+.project-code {
+    display: inline-block;
+    margin-bottom: 0.5rem;
 }
 
 .project-code {
@@ -694,7 +695,8 @@
 }
 
 .preview-form {
-    padding-bottom: 0;
+    padding-bottom: 1.5rem;
+    gap: 1.75rem;
 }
 
 .preview-section {
