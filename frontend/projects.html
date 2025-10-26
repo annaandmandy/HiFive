@@ -22,192 +22,182 @@
 
     <main class="projects-container">
         <section class="projects-header">
-            <div>
-                <h2>Explore University AI Projects</h2>
-                <p>Search ongoing initiatives, filter by focus area, or launch your own project.</p>
-            </div>
-            <div class="projects-search-bar">
-                <input type="text" id="project-search-input" placeholder="Search projects by title, topic, or leader">
-                <button class="btn btn-primary" id="project-search-btn">Search</button>
-                <button class="btn btn-secondary filter-toggle" id="project-filter-btn">Filters</button>
-            </div>
-            <div class="projects-filters" id="project-filters">
-                <div class="filter-group">
-                    <label for="project-topic-filter">Topic</label>
-                    <select id="project-topic-filter">
-                        <option value="">All Topics</option>
-                        <option value="african-american-studies">African American Studies</option>
-                        <option value="american-studies">American Studies</option>
-                        <option value="anatomy">Anatomy</option>
-                        <option value="artificial-intelligence">Artificial Intelligence</option>
-                        <option value="biochemistry">Biochemistry</option>
-                        <option value="biology">Biology</option>
-                        <option value="biomedical">Biomedical</option>
-                        <option value="business">Business</option>
-                        <option value="communications">Communications</option>
-                        <option value="computer-science">Computer Science</option>
-                        <option value="data-sciences">Data Sciences</option>
-                        <option value="economics">Economics</option>
-                        <option value="education">Education</option>
-                        <option value="engineering">Engineering</option>
-                        <option value="health">Health</option>
-                        <option value="higher-education">Higher Education</option>
-                        <option value="history">History</option>
-                        <option value="hospitality">Hospitality</option>
-                        <option value="humanities">Humanities</option>
-                        <option value="immunology">Immunology</option>
-                        <option value="japanese-language">Japanese Language</option>
-                        <option value="linguistics-language-sciences">Linguistics &amp; Language Sciences</option>
-                        <option value="literature">Literature</option>
-                        <option value="mathematics">Mathematics</option>
-                        <option value="medicine">Medicine</option>
-                        <option value="neuroscience">Neuroscience</option>
-                        <option value="ophthalmology">Ophthalmology</option>
-                        <option value="pediatrics">Pediatrics</option>
-                        <option value="pharmacology">Pharmacology</option>
-                        <option value="physical-therapy">Physical Therapy</option>
-                        <option value="political-science">Political Science</option>
-                        <option value="psychology">Psychology</option>
-                        <option value="public-health">Public Health</option>
-                        <option value="social-science">Social Science</option>
-                        <option value="sociology">Sociology</option>
-                        <option value="speech-language-hearing-sciences">Speech, Language, and Hearing Sciences</option>
-                    </select>
+            <div class="projects-header-top">
+                <div>
+                    <h2>Explore University Initiatives</h2>
+                    <p>Search ongoing projects, filter by focus, or launch a new effort.</p>
                 </div>
-                <div class="filter-group">
-                    <label for="project-stage-filter">Project Stage</label>
-                    <select id="project-stage-filter">
-                        <option value="">Any</option>
-                        <option value="proposal">Proposal</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="finished">Finished</option>
-                        <option value="published">Published</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="project-campus-filter">Location</label>
-                    <select id="project-campus-filter">
-                        <option value="">Any Location</option>
-                        <option value="on-campus">On Campus</option>
-                        <option value="off-campus">Off Campus</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="project-mode-filter">Delivery Mode</label>
-                    <select id="project-mode-filter">
-                        <option value="">Any Mode</option>
-                        <option value="online">Online</option>
-                        <option value="offline">Offline</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="project-funding-filter">Funding Status</label>
-                    <select id="project-funding-filter">
-                        <option value="">Any Status</option>
-                        <option value="seeking">Seeking Funding</option>
-                        <option value="partial">Partially Funded</option>
-                        <option value="secured">Funding Secured</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="project-requirement-filter">Requirement Level</label>
-                    <select id="project-requirement-filter">
-                        <option value="">Any Level</option>
-                        <option value="low">Low Requirements</option>
-                        <option value="medium">Moderate Requirements</option>
-                        <option value="high">High Requirements</option>
-                    </select>
-                </div>
-                <div class="filter-actions">
-                    <button class="btn btn-primary" id="apply-filter-btn">Apply</button>
-                    <button class="btn btn-secondary" id="reset-filter-btn">Reset</button>
+                <div class="projects-header-actions">
+                    <button class="btn btn-primary" id="project-launch-btn">Launch Initiative</button>
                 </div>
             </div>
-        </section>
 
-        <section class="projects-content">
-            <aside class="project-create-panel">
-                <div class="card create-card">
-                    <h3>Launch a New Project</h3>
-                    <p>Share your idea to find collaborators and resources.</p>
-                    <form id="project-create-form">
-                        <div class="form-group">
-                            <label for="project-title">Project Title</label>
-                            <input type="text" id="project-title" placeholder="Enter project name">
+            <section class="projects-trending" id="projects-trending">
+                <div class="trending-header">
+                    <div>
+                        <h3>Trending Initiatives</h3>
+                        <p>Popular projects based on recent activity and engagement.</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" id="trending-toggle" aria-expanded="true">
+                        Collapse
+                    </button>
+                </div>
+                <div class="trending-content" id="trending-content">
+                    <div class="trending-list" id="trending-list">
+                        <div class="trending-empty">Loading trending projects...</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="projects-controls">
+                <div class="projects-search">
+                    <input
+                        type="text"
+                        id="project-search-input"
+                        placeholder="Search by title, topic, or lead"
+                        aria-label="Search initiatives"
+                    >
+                    <div class="search-actions">
+                        <button class="btn btn-primary" id="project-search-btn">Search</button>
+                        <button class="btn btn-secondary filter-toggle" id="project-filter-btn" aria-expanded="false">Show Filters</button>
+                    </div>
+                </div>
+
+                <div class="projects-filters collapsed" id="project-filters">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="project-topic-filter">Topic</label>
+                            <select id="project-topic-filter">
+                                <option value="">All Topics</option>
+                                <option value="african-american-studies">African American Studies</option>
+                                <option value="american-studies">American Studies</option>
+                                <option value="anatomy">Anatomy</option>
+                                <option value="artificial-intelligence">Artificial Intelligence</option>
+                                <option value="biochemistry">Biochemistry</option>
+                                <option value="biology">Biology</option>
+                                <option value="biomedical">Biomedical</option>
+                                <option value="business">Business</option>
+                                <option value="communications">Communications</option>
+                                <option value="computer-science">Computer Science</option>
+                                <option value="data-sciences">Data Sciences</option>
+                                <option value="economics">Economics</option>
+                                <option value="education">Education</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="health">Health</option>
+                                <option value="higher-education">Higher Education</option>
+                                <option value="history">History</option>
+                                <option value="hospitality">Hospitality</option>
+                                <option value="humanities">Humanities</option>
+                                <option value="immunology">Immunology</option>
+                                <option value="japanese-language">Japanese Language</option>
+                                <option value="linguistics-language-sciences">Linguistics &amp; Language Sciences</option>
+                                <option value="literature">Literature</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="medicine">Medicine</option>
+                                <option value="neuroscience">Neuroscience</option>
+                                <option value="ophthalmology">Ophthalmology</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="pharmacology">Pharmacology</option>
+                                <option value="physical-therapy">Physical Therapy</option>
+                                <option value="political-science">Political Science</option>
+                                <option value="psychology">Psychology</option>
+                                <option value="public-health">Public Health</option>
+                                <option value="social-science">Social Science</option>
+                                <option value="sociology">Sociology</option>
+                                <option value="speech-language-hearing-sciences">Speech, Language, and Hearing Sciences</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label for="project-lead">Project Lead</label>
-                            <input type="text" id="project-lead" placeholder="Lead researcher or student">
+                        <div class="filter-group">
+                            <label for="project-stage-filter">Stage</label>
+                            <select id="project-stage-filter">
+                                <option value="">Any</option>
+                                <option value="proposal">Proposal</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="pilot">Pilot Study</option>
+                                <option value="finished">Finished</option>
+                                <option value="published">Published</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label for="project-lead-type">Lead Type</label>
-                            <select id="project-lead-type">
-                                <option value="student-led" selected>Student-led</option>
+                        <div class="filter-group">
+                            <label for="project-launch-filter">Launch Type</label>
+                            <select id="project-launch-filter">
+                                <option value="">Any Type</option>
+                                <option value="project">Project</option>
+                                <option value="research">Research</option>
+                                <option value="lab">Lab</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="project-lead-filter">Lead Type</label>
+                            <select id="project-lead-filter">
+                                <option value="">Any Lead</option>
+                                <option value="student-led">Student-led</option>
                                 <option value="professor-led">Professor-led</option>
                                 <option value="collaborative">Student &amp; Professor Collaboration</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Launch Type</span>
-                            <div class="toggle-group launch-type-toggle" role="group" aria-label="Launch type">
-                                <label class="toggle-option">
-                                    <input type="radio" name="project-launch-type" value="project" checked>
-                                    <span>Project</span>
-                                </label>
-                                <label class="toggle-option">
-                                    <input type="radio" name="project-launch-type" value="research">
-                                    <span>Research</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="project-topic">Primary Topic</label>
-                            <input type="text" id="project-topic" placeholder="e.g., AI Safety, NLP">
-                        </div>
-                        <div class="form-group">
-                            <label for="project-summary">Project Summary</label>
-                            <textarea id="project-summary" rows="4" placeholder="Brief description of goals and impact"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="project-funding">Estimated Funding Needed (USD)</label>
-                            <input type="number" id="project-funding" placeholder="e.g., 5000" min="0" step="100">
-                        </div>
-                        <div class="form-group">
-                            <label for="project-stage">Stage</label>
-                            <select id="project-stage">
-                                <option value="proposal">Proposal</option>
-                                <option value="in-progress">In Progress</option>
-                                <option value="pilot">Pilot Study</option>
-                                <option value="concluded">Concluded</option>
-                                <option value="finished">Finished</option>
-                                <option value="published">Published</option>
+                        <div class="filter-group">
+                            <label for="project-campus-filter">Location</label>
+                            <select id="project-campus-filter">
+                                <option value="">Any Location</option>
+                                <option value="on-campus">On Campus</option>
+                                <option value="off-campus">Off Campus</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary full-width">Create Project</button>
-                    </form>
-                    <small class="create-hint">Submitting a project sends it to faculty moderators for review.</small>
-                </div>
-            </aside>
-
-            <section class="project-list-panel">
-                <div class="project-list-header">
-                    <h3>Active Projects <span class="count-badge" id="project-count">0</span></h3>
-                    <div class="sort-options">
-                        <label for="project-sort-select">Sort by:</label>
-                        <select id="project-sort-select">
-                            <option value="updated">Recently Updated</option>
-                            <option value="title">Title</option>
-                            <option value="members">Team Size</option>
-                        </select>
+                        <div class="filter-group">
+                            <label for="project-mode-filter">Mode</label>
+                            <select id="project-mode-filter">
+                                <option value="">Any Mode</option>
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                                <option value="hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="project-funding-filter">Funding Status</label>
+                            <select id="project-funding-filter">
+                                <option value="">Any Status</option>
+                                <option value="seeking">Seeking Funding</option>
+                                <option value="partial">Partially Funded</option>
+                                <option value="secured">Funding Secured</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="project-requirement-filter">Requirement Level</label>
+                            <select id="project-requirement-filter">
+                                <option value="">Any Level</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Moderate</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="apply-filter-btn">Apply</button>
+                        <button class="btn btn-secondary" id="reset-filter-btn">Reset</button>
                     </div>
                 </div>
-                <div id="project-loading" class="loading">Loading projects...</div>
-                <div id="project-grid" class="project-grid"></div>
-                <div id="project-empty" class="no-results" style="display: none;">
-                    <p>No projects match your filters. Try adjusting your search or start a new project.</p>
+            </div>
+        </section>
+
+        <section class="project-list-panel">
+            <div class="project-list-header">
+                <h3>Active Initiatives <span class="count-badge" id="project-count">0</span></h3>
+                <div class="sort-options">
+                    <label for="project-sort-select">Sort by:</label>
+                    <select id="project-sort-select">
+                        <option value="updated">Recently Updated</option>
+                        <option value="title">Title</option>
+                        <option value="members">Team Size</option>
+                    </select>
                 </div>
-            </section>
+            </div>
+            <div id="project-loading" class="loading">Loading projects...</div>
+            <div id="project-grid" class="project-grid"></div>
+            <div id="project-empty" class="no-results" style="display: none;">
+                <p>No projects match your filters. Try adjusting your search or start a new initiative.</p>
+            </div>
         </section>
     </main>
 
@@ -216,5 +206,114 @@
     </footer>
 
     <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initProjectsPage } from './script.js';
+        initProjectsPage();
+    </script>
+
+    <div class="modal-backdrop" id="launch-modal-backdrop" hidden></div>
+    <div class="modal" id="launch-modal" role="dialog" aria-modal="true" aria-labelledby="launch-modal-title" hidden>
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="launch-modal-title">Launch New Initiative</h3>
+                <button class="modal-close" id="launch-modal-close" aria-label="Close launch form">&times;</button>
+            </header>
+            <form id="project-create-form" class="modal-form">
+                <div class="modal-grid">
+                    <div class="form-group">
+                        <label for="project-title">Project Title</label>
+                        <input type="text" id="project-title" placeholder="Enter project name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-lead">Project Lead</label>
+                        <input type="text" id="project-lead" placeholder="Lead researcher or student" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-lead-type">Lead Type</label>
+                        <select id="project-lead-type">
+                            <option value="student-led" selected>Student-led</option>
+                            <option value="professor-led">Professor-led</option>
+                            <option value="collaborative">Student &amp; Professor Collaboration</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-topic">Primary Topic</label>
+                        <input type="text" id="project-topic" placeholder="e.g., AI Safety, NLP">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-stage">Stage</label>
+                        <select id="project-stage">
+                            <option value="proposal">Proposal</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="pilot">Pilot Study</option>
+                            <option value="concluded">Concluded</option>
+                            <option value="finished">Finished</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-funding">Estimated Funding Needed (USD)</label>
+                        <input type="number" id="project-funding" placeholder="e.g., 5000" min="0" step="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Launch Type</span>
+                    <div class="toggle-group launch-type-toggle" role="group" aria-label="Launch type">
+                        <label class="toggle-option">
+                            <input type="radio" name="project-launch-type" value="project" checked>
+                            <span>Project</span>
+                        </label>
+                        <label class="toggle-option">
+                            <input type="radio" name="project-launch-type" value="research">
+                            <span>Research</span>
+                        </label>
+                        <label class="toggle-option">
+                            <input type="radio" name="project-launch-type" value="lab">
+                            <span>Lab</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-summary">Project Summary</label>
+                    <textarea id="project-summary" rows="4" placeholder="Brief description of goals and impact"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="launch-modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Launch</button>
+                </div>
+                <small class="create-hint">Submitting an initiative routes it to faculty moderators for review.</small>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="preview-modal-backdrop" hidden></div>
+    <div class="modal" id="preview-modal" role="dialog" aria-modal="true" aria-labelledby="preview-modal-title" hidden>
+        <div class="modal-content preview-modal">
+            <header class="modal-header">
+                <div>
+                    <h3 id="preview-modal-title">Project Preview</h3>
+                    <p id="preview-modal-code" class="preview-code"></p>
+                </div>
+                <button class="modal-close" id="preview-modal-close" aria-label="Close preview">&times;</button>
+            </header>
+            <div class="modal-form preview-form">
+                <section class="preview-section">
+                    <h4>Summary</h4>
+                    <p id="preview-modal-summary"></p>
+                </section>
+                <section class="preview-section">
+                    <h4>Message from Project Lead</h4>
+                    <p id="preview-modal-message"></p>
+                </section>
+            </div>
+            <div class="modal-actions preview-actions">
+                <button type="button" class="btn btn-secondary" id="preview-modal-dismiss">Close</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
