@@ -17,198 +17,350 @@ async function fetchAPI(endpoint, options = {}) {
 
 // ===== HOME PAGE (Dashboard) =====
 export async function initDashboard() {
-    console.log('Initializing dashboard...');
-    await loadTopicNetwork();
-    updateStats();
+  console.log('Initializing dashboard...');
+  renderTopicNetwork();
+  updateDashboardStats();
 }
 
-function colorForString(str) {
-    // Generate a repeatable color from string
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+async function renderTopicNetwork() {
+  const loadingEl = document.getElementById('network-loading');
+  loadingEl.style.display = 'block';
+
+  let topics = [];
+  try {
+    const res = await fetchAPI('/api/trending');
+    // Accept either array or { topics: [...] } shapes
+    if (Array.isArray(res)) topics = res;
+    else if (res && Array.isArray(res.topics)) topics = res.topics;
+    else if (res && Array.isArray(res.data)) topics = res.data;
+    else {
+      // If backend returns object with counts, attempt to coerce
+      if (res && typeof res === 'object') {
+        // Try to extract a list-like value
+        const vals = Object.values(res).find(v => Array.isArray(v));
+        if (Array.isArray(vals)) topics = vals;
+      }
     }
-    const hue = Math.abs(hash) % 360;
-    return `hsl(${hue}, 70%, 50%)`;
-}
+  } catch (err) {
+    console.warn('Trending API failed — using mock topics.');
+    topics = [
+      { topic: "Large Language Models", count: 150 },
+      { topic: "AI Safety", count: 120 },
+      { topic: "Computer Vision", count: 100 },
+      { topic: "Reinforcement Learning", count: 80 },
+      { topic: "Prompt Engineering", count: 70 },
+      { topic: "Optimization", count: 65 },
+      { topic: "Bias & Fairness", count: 60 },
+      { topic: "Diffusion Models", count: 55 },
+      { topic: "Quantum AI", count: 50 },
+      { topic: "Transformers", count: 45 },
+      { topic: "Neural Networks", count: 40 },
+      { topic: "Data Efficiency", count: 35 },
+      { topic: "AI Ethics", count: 30 },
+      { topic: "Causal Inference", count: 28 },
+      { topic: "Autonomous Agents", count: 25 },
+      { topic: "Speech Recognition", count: 24 },
+      { topic: "Graph Neural Networks", count: 22 },
+      { topic: "Representation Learning", count: 20 },
+      { topic: "AI Governance", count: 18 },
+      { topic: "Federated Learning", count: 15 },
+    ];
+  }
 
-function darker(color, factor = 0.2) {
-    try {
-        const c = d3.color(color);
-        c.l -= factor;
-        return c.formatHsl();
-    } catch {
-        return color;
-    }
-}
-/*
-  loadTopicNetwork()
-  - tries /api/trending_network (nodes + links). If not found, falls back to /api/trending and /api/wordcloud
-  - renders a force-directed network using D3 v7
-  - nodes sized by frequency and drawn with radial gradients to appear 3D
-  - clicking a node navigates to people.html?topic=...
-*/
-async function loadTopicNetwork() {
-    const svg = d3.select('#topic-network');
-    const loading = document.getElementById('network-loading');
-    loading.style.display = 'block';
-    svg.selectAll('*').remove();
+  // Normalize incoming items to {name, value}
+  const normalized = topics.slice(0, 50).map((t) => {
+    if (typeof t === 'string') return { name: t, value: 1 };
+    return {
+      name: t.topic || t.name || t.label || t.id || 'Unknown',
+      value: Number(t.count || t.value || t.freq || 1)
+    };
+  });
 
-    // Fetch trending network data or build fallback
-    let data = null;
-    try {
-        data = await fetchAPI('/api/trending_network');
-    } catch (e) {
-        console.warn('Using mock data fallback');
-        data = {
-            nodes: [
-                { id: "AI Ethics", value: 42 },
-                { id: "Neural Networks", value: 35 },
-                { id: "Reinforcement Learning", value: 28 },
-                { id: "Computer Vision", value: 22 },
-                { id: "Natural Language Processing", value: 50 },
-                { id: "Quantum AI", value: 18 },
-                { id: "Generative Models", value: 45 }
-            ],
-            links: [
-                { source: "AI Ethics", target: "Neural Networks" },
-                { source: "Neural Networks", target: "Reinforcement Learning" },
-                { source: "Reinforcement Learning", target: "Computer Vision" },
-                { source: "Computer Vision", target: "Natural Language Processing" },
-                { source: "Generative Models", target: "Natural Language Processing" },
-                { source: "Quantum AI", target: "AI Ethics" }
-            ]
-        };
-    }
+  // If no data, show message
+  if (!normalized.length) {
+    loadingEl.textContent = 'No trending topics available.';
+    return;
+  }
 
-    const nodes = data.nodes || [];
-    const links = data.links || [];
+  // Build token sets for similarity
+  const tokenize = (s) => {
+    return s
+      .toLowerCase()
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(tok => tok.replace(/\d+/g, '')); // remove pure numbers
+  };
 
-    if (nodes.length === 0) {
-        loading.textContent = 'No topics available';
-        return;
-    }
+  const topicObjs = normalized.map(d => {
+    const tokens = new Set(tokenize(d.name));
+    return { name: d.name, value: d.value, tokens };
+  });
 
-    // Normalize node sizes
-    const values = nodes.map(n => n.value);
-    const rScale = d3.scaleSqrt().domain([Math.min(...values), Math.max(...values)]).range([8, 40]);
+  // Pairwise Jaccard similarity
+  function jaccard(aSet, bSet) {
+    const a = Array.from(aSet);
+    const b = Array.from(bSet);
+    const inter = a.filter(x => bSet.has(x)).length;
+    const union = new Set([...a, ...b]).size || 1;
+    return inter / union;
+  }
 
-    loading.style.display = 'none';
-
-    const bbox = svg.node().getBoundingClientRect();
-    const width = bbox.width || 800;
-    const height = bbox.height || 500;
-    svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-    // Color from styles.css
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color') || '#4f46e5';
-
-    // Force simulation (runs once)
-    const simulation = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id(d => d.id).distance(90))
-        .force('charge', d3.forceManyBody().strength(-200))
-        .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('collide', d3.forceCollide().radius(d => rScale(d.value) + 6))
-        .stop();
-
-    // Run the simulation manually (static layout)
-    simulation.tick(200);
-
-    // Draw links
-    svg.append('g')
-        .attr('stroke', 'var(--border-color)')
-        .attr('stroke-opacity', 0.6)
-        .selectAll('line')
-        .data(links)
-        .enter().append('line')
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-
-    // Tooltip
-    let tooltip = d3.select('body').selectAll('.topic-tooltip').data([0]);
-    tooltip = tooltip.enter().append('div').attr('class','topic-tooltip').merge(tooltip);
-
-    // Draw nodes
-    const nodeG = svg.append('g')
-        .selectAll('circle')
-        .data(nodes)
-        .enter().append('circle')
-        .attr('r', d => rScale(d.value))
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y)
-        .attr('fill', accent)
-        .attr('stroke', '#fff')
-        .attr('stroke-width', 1.5)
-        .on('mouseover', function(event, d) {
-            tooltip
-                .style('display', 'block')
-                .html(`<strong>${d.id}</strong><div style="font-size:0.85rem;color:var(--text-secondary)">Frequency: ${d.value}</div>`);
-        })
-        .on('mousemove', function(event) {
-            tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY + 12) + 'px');
-        })
-        .on('mouseout', function() {
-            tooltip.style('display', 'none');
-        })
-        .on('click', function(event, d) {
-            window.location.href = `people.html?topic=${encodeURIComponent(d.id)}`;
+  // Create edges for pairs with similarity above threshold
+  const links = [];
+  for (let i = 0; i < topicObjs.length; i++) {
+    for (let j = i + 1; j < topicObjs.length; j++) {
+      const s = jaccard(topicObjs[i].tokens, topicObjs[j].tokens);
+      if (s > 0.18) { // threshold tuned for meaningful relatedness
+        links.push({
+          source: i,
+          target: j,
+          weight: s
         });
-
-    // Label text
-    svg.append('g')
-        .selectAll('text')
-        .data(nodes)
-        .enter().append('text')
-        .attr('x', d => d.x)
-        .attr('y', d => d.y + rScale(d.value) + 14)
-        .attr('text-anchor', 'middle')
-        .attr('font-weight', '600')
-        .attr('fill', 'var(--text-primary)')
-        .text(d => d.id);
-
-    // === Quick Stats updates ===
-    try {
-        // Trending Topics
-        const topTopics = nodes.sort((a, b) => b.value - a.value).slice(0, 3).map(n => n.id).join(', ');
-        document.getElementById('stat-topics').textContent = topTopics || '-';
-
-        // Active Researchers
-        const people = await fetchAPI('/api/people');
-        if (people && Array.isArray(people)) {
-            document.getElementById('stat-researchers').textContent = people.length.toString();
-        } else if (people && people.count) {
-            document.getElementById('stat-researchers').textContent = people.count.toString();
-        } else {
-            document.getElementById('stat-researchers').textContent = '-';
-        }
-
-        // Recent Papers
-        const papers = await fetchAPI('/api/papers');
-        if (papers && Array.isArray(papers)) {
-            document.getElementById('stat-papers').textContent = papers.length.toString();
-        } else if (papers && papers.count) {
-            document.getElementById('stat-papers').textContent = papers.count.toString();
-        } else {
-            document.getElementById('stat-papers').textContent = '-';
-        }
-    } catch (err) {
-        console.warn('Could not update stats:', err);
+      }
     }
+  }
 
-    try {
-        // Trending Topics (top 3)
-        const topTopics = nodes.sort((a, b) => b.value - a.value).slice(0, 3).map(n => n.id).join(', ');
-        document.getElementById('stat-topics').textContent = topTopics || '-';
+  // Build nodes array (with id and cluster placeholder)
+  const nodes = topicObjs.map((t, i) => ({ id: i, name: t.name, value: t.value, tokens: t.tokens }));
 
-        // Mock researchers & papers
-        document.getElementById('stat-researchers').textContent = '23';
-        document.getElementById('stat-papers').textContent = '12';
-    } catch (err) {
-        console.warn('Could not update stats:', err);
+  // Simple greedy clustering: create clusters by similarity to cluster token centroid
+  const clusters = [];
+  const clusterAssign = new Array(nodes.length).fill(-1);
+  const CLUSTER_SIM_THRESHOLD = 0.25;
+  nodes.forEach((node, idx) => {
+    // try assign to existing cluster if similar enough to centroid
+    let assigned = false;
+    for (let c = 0; c < clusters.length; c++) {
+      const centroidTokens = clusters[c].centroid;
+      const sim = jaccard(node.tokens, centroidTokens);
+      if (sim >= CLUSTER_SIM_THRESHOLD) {
+        clusters[c].members.push(idx);
+        // update centroid as union (simple)
+        centroidTokens.forEach(tok => {});
+        node.tokens.forEach(tok => centroidTokens.add(tok));
+        clusterAssign[idx] = c;
+        assigned = true;
+        break;
+      }
     }
+    if (!assigned) {
+      // create new cluster
+      const newCentroid = new Set(node.tokens);
+      clusters.push({ centroid: newCentroid, members: [idx] });
+      clusterAssign[idx] = clusters.length - 1;
+    }
+  });
+
+  // Limit number of clusters to a reasonable number (merge extras) - optional
+  // Map cluster index -> color
+  const pastelPalette = [
+    '#c7e9f1', '#e9d5ff', '#ffe7c7', '#e2f7d5', '#fbe4f2', '#f0f9ff', '#fef3c7'
+  ];
+  // ensure at least as many colors as clusters (repeat if needed)
+  const clusterColor = (cIdx) => pastelPalette[cIdx % pastelPalette.length];
+
+  // Prepare D3 simulation
+  const svg = d3.select('#graph-svg');
+  svg.selectAll('*').remove(); // clear old graph
+
+  const width = parseInt(svg.style('width')) || 1200;
+  const height = parseInt(svg.style('height')) || 600;
+
+  // Compute node radii based on value (log scale to avoid huge sizes)
+  const values = nodes.map(n => n.value || 1);
+  const minV = Math.min(...values);
+  const maxV = Math.max(...values);
+  const radiusScale = d3.scaleSqrt().domain([minV, maxV]).range([10, 42]);
+
+  // Convert link indices to node ids for d3 force
+  const d3Links = links.map(l => ({
+    source: l.source,
+    target: l.target,
+    weight: l.weight
+  }));
+
+  // Add defs for marker if needed (not necessary now)
+
+  // Force simulation
+  const simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(d3Links).id(d => d.id).distance(d => {
+      // stronger similarity => shorter distance
+      const link = d3Links.find(l => (l.source === d.source?.id && l.target === d.target?.id) || (l.source === d.target?.id && l.target === d.source?.id));
+      return link ? 120 - (link.weight * 80) : 220;
+    }).strength(l => l.weight * 0.9))
+    .force('charge', d3.forceManyBody().strength(-160))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    // use collision radius accounting for labels to avoid overlap
+    .force('collide', d3.forceCollide().radius(d => {
+      const r = radiusScale(d.value);
+      // add label padding. We'll approximate label width by characters * 6 (enough for our font-size)
+      const approxLabelWidth = Math.min(220, (d.name.length * 7));
+      const extra = Math.sqrt(approxLabelWidth * approxLabelWidth + 16 * 16) / 2;
+      return r + extra + 6;
+    }).iterations(2))
+    .alphaDecay(0.02)
+    .on('tick', ticked);
+
+  // Draw links
+  const linkG = svg.append('g').attr('class', 'links');
+  const link = linkG.selectAll('line')
+    .data(d3Links)
+    .enter()
+    .append('line')
+    .attr('class', 'link-line')
+    .attr('stroke-width', d => Math.max(1, d.weight * 2.2));
+
+  // Draw nodes group
+  const nodeG = svg.append('g').attr('class', 'nodes');
+
+  const node = nodeG.selectAll('g.node')
+    .data(nodes)
+    .enter()
+    .append('g')
+    .attr('class', 'node')
+    .call(drag(simulation));
+
+  // circle
+  node.append('circle')
+    .attr('class', 'node-circle')
+    .attr('r', d => radiusScale(d.value))
+    .attr('fill', d => clusterColor(clusterAssign[d.id]));
+
+  // label (always visible)
+  node.append('text')
+    .attr('class', 'node-label')
+    .attr('dy', d => -radiusScale(d.value) - 6)
+    .text(d => d.name)
+    .each(function(d) {
+      // wrap long labels into multiple lines if too long (improve layout)
+      const self = d3.select(this);
+      const words = d.name.split(/\s+/);
+      if (words.length > 3 || d.name.length > 18) {
+        self.text('');
+        let line = [];
+        let lineNumber = 0;
+        const lineHeight = 12;
+        let tspan = self.append('tspan').attr('x', 0).attr('dy', -radiusScale(d.value) - 6 + 'px').attr('text-anchor','middle');
+        words.forEach((word) => {
+          line.push(word);
+          tspan.text(line.join(' '));
+          if (tspan.node().getComputedTextLength() > 160) {
+            line.pop();
+            tspan.text(line.join(' '));
+            line = [word];
+            lineNumber++;
+            tspan = self.append('tspan').attr('x', 0).attr('dy', (lineNumber * lineHeight) + 'px').text(word).attr('text-anchor','middle');
+          }
+        });
+      }
+    });
+
+  // small count text inside/near node if large enough
+  node.append('text')
+    .attr('class', 'node-count')
+    .attr('dy', d => 4)
+    .text(d => d.value > 9 ? d.value : '');
+
+  // click behavior: go to people.html?topic=<name>
+  node.on('click', (event, d) => {
+    const topic = d.name;
+    window.location.href = `people.html?topic=${encodeURIComponent(topic)}`;
+  });
+
+  // show legend (cluster chips)
+  renderLegend(svg, clusters.map((c, idx) => ({ idx, count: c.members.length })));
+
+  // hide loading
+  loadingEl.style.display = 'none';
+
+  // update positions on each tick
+  function ticked() {
+  const margin = 60; // keep small padding around the edges
+  const w = width;
+  const h = height;
+
+  // Clamp node positions to stay within bounds
+  nodes.forEach((d) => {
+    const r = radiusScale(d.value);
+    d.x = Math.max(r + margin, Math.min(w - r - margin, d.x));
+    d.y = Math.max(r + margin, Math.min(h - r - margin, d.y));
+  });
+
+  // Update link positions
+  link
+    .attr('x1', d => Math.max(margin, Math.min(w - margin, d.source.x)))
+    .attr('y1', d => Math.max(margin, Math.min(h - margin, d.source.y)))
+    .attr('x2', d => Math.max(margin, Math.min(w - margin, d.target.x)))
+    .attr('y2', d => Math.max(margin, Math.min(h - margin, d.target.y)));
+
+  // Update node group positions
+  node.attr('transform', d => `translate(${d.x},${d.y})`);
 }
+
+  // make canvas responsive: recompute center
+  window.addEventListener('resize', () => {
+    const w = svg.node().clientWidth;
+    const h = svg.node().clientHeight;
+    simulation.force('center', d3.forceCenter(w / 2, h / 2));
+    simulation.alpha(0.5).restart();
+  });
+
+  // Drag helpers
+  function drag(sim) {
+    function started(event, d) {
+      if (!event.active) sim.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+    function ended(event, d) {
+      if (!event.active) sim.alphaTarget(0);
+      // Keep nodes free (no permanent fixed positions)
+      d.fx = null;
+      d.fy = null;
+    }
+    return d3.drag()
+      .on('start', started)
+      .on('drag', dragged)
+      .on('end', ended);
+  }
+
+  // Render a simple legend overlay for clusters
+  function renderLegend(svgRoot, clusterInfo) {
+    // create a small HTML legend inside the graph container for clarity
+    // remove older legend if present
+    d3.selectAll('.graph-legend').remove();
+
+    const container = d3.select('#graph-container');
+    const legend = container.append('div').attr('class', 'graph-legend');
+
+    clusterInfo.slice(0, 8).forEach(ci => {
+      const chip = legend.append('div').attr('class', 'legend-chip');
+      chip.append('div')
+        .attr('class', 'legend-swatch')
+        .style('background', clusterColor(ci.idx));
+      chip.append('div').text(`Group ${ci.idx + 1} (${ci.count})`);
+    });
+  }
+}
+
+/* -------------------------
+   Dashboard stats 
+   ------------------------- */
+function updateDashboardStats() {
+  const trendingTopics = ["Deep Learning", "NLP", "Computer Vision", "AI Safety"];
+  const activeResearchers = 128;
+  const recentPapers = 45;
+  document.getElementById("stat-topics").textContent = trendingTopics.join(", ");
+  document.getElementById("stat-researchers").textContent = activeResearchers;
+  document.getElementById("stat-papers").textContent = recentPapers;
+}
+
+
 
 // ===== PEOPLE PAGE (Researchers) =====
 export async function initPeoplePage() {
