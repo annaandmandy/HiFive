@@ -13,6 +13,16 @@ const PROJECT_ASSET_FILES = [
 ];
 const PROJECT_ASSET_BASE_PATH = './assets/';
 const resolvedProjectImages = new Map();
+const LEAD_ASSET_FILES = [
+    'BoasDavid.jpg',
+    'DavidLagakos.jpeg',
+    'EllaZeldich.jpg',
+    'JamesPasto.jpeg',
+    'PrattErica.jpeg',
+    'SarahFrederick.jpg'
+];
+const LEAD_ASSET_BASE_PATH = './assets_prof_img/';
+const resolvedLeadImages = new Map();
 let previewModalElements = null;
 let lastPreviewTrigger = null;
 let trendingAutoMinimizeSuspended = false;
@@ -1202,6 +1212,7 @@ export async function initProjectsPage() {
 
         projects = await response.json();
         assignProjectImages(projects);
+        assignLeadImages(projects);
         trending = selectTrendingProjects(projects);
     } catch (error) {
         console.error('Error loading projects:', error);
@@ -1324,6 +1335,37 @@ function assignProjectImages(projects) {
     });
 }
 
+function assignLeadImages(projects) {
+    resolvedLeadImages.clear();
+    if (!Array.isArray(projects) || !projects.length) return;
+
+    const descriptors = LEAD_ASSET_FILES.map((file) => ({
+        file,
+        tokens: deriveAssetTokens(file)
+    }));
+
+    projects.forEach((project) => {
+        const lead = project?.lead;
+        const key = getLeadKey(lead);
+        if (!key || resolvedLeadImages.has(key)) return;
+
+        const tokens = getLeadNameTokens(lead.name);
+        let best = null;
+
+        descriptors.forEach((descriptor) => {
+            const score = scoreAssetMatch(descriptor.tokens, tokens);
+            if (!score) return;
+            if (!best || score > best.score) {
+                best = { descriptor, score };
+            }
+        });
+
+        if (best) {
+            resolvedLeadImages.set(key, `${LEAD_ASSET_BASE_PATH}${best.descriptor.file}`);
+        }
+    });
+}
+
 function getProjectBackgroundStyle(project) {
     const assetPath = resolveProjectImagePath(project);
     if (assetPath) {
@@ -1339,11 +1381,22 @@ function resolveProjectImagePath(project) {
     return resolvedProjectImages.get(key) || null;
 }
 
+function resolveLeadImagePath(lead) {
+    const key = getLeadKey(lead);
+    if (!key) return null;
+    return resolvedLeadImages.get(key) || null;
+}
+
 function getProjectKey(project) {
     if (!project) return '';
     const raw = project.code || project.id || project.title;
     if (!raw) return '';
     return raw.toString().toUpperCase();
+}
+
+function getLeadKey(lead) {
+    if (!lead || !lead.name) return '';
+    return lead.name.toLowerCase().replace(/[^a-z0-9]+/g, '');
 }
 
 function deriveAssetTokens(fileName) {
@@ -1364,6 +1417,15 @@ function getTitleTokens(title) {
         .replace(/&/g, ' ')
         .split(/[^a-z0-9]+/)
         .filter(Boolean);
+}
+
+function getLeadNameTokens(name) {
+    if (!name) return [];
+    return name
+        .toLowerCase()
+        .replace(/&/g, ' ')
+        .split(/[^a-z0-9]+/)
+        .filter((token) => token.length > 1);
 }
 
 function scoreAssetMatch(assetTokens, titleTokens) {
@@ -1724,7 +1786,17 @@ function createProjectCard(project) {
 
     const lead = document.createElement('div');
     lead.className = 'project-lead';
-    lead.textContent = formatLead(project.lead);
+
+    const leadAvatar = createLeadAvatar(project.lead);
+    if (leadAvatar) {
+        lead.appendChild(leadAvatar);
+    }
+
+    const leadText = document.createElement('div');
+    leadText.className = 'project-lead-text';
+    leadText.textContent = formatLead(project.lead);
+    lead.appendChild(leadText);
+
     content.appendChild(lead);
 
     const meta = document.createElement('div');
@@ -1797,6 +1869,18 @@ function createBadge(text, type, modifier = '') {
     badge.className = `badge badge-${type}${normalizedModifier}`;
     badge.textContent = text;
     return badge;
+}
+
+function createLeadAvatar(lead) {
+    const src = resolveLeadImagePath(lead);
+    if (!src) return null;
+
+    const img = document.createElement('img');
+    img.className = 'project-lead-photo';
+    img.src = src;
+    img.alt = lead?.name ? `${lead.name} portrait` : 'Project lead portrait';
+    img.loading = 'lazy';
+    return img;
 }
 
 function createMetaItem(label, value) {
