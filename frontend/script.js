@@ -3,8 +3,22 @@
 // API Configuration
 const API_BASE_URL = 'http://localhost:8000';
 const PROJECTS_DATA_URL = './mock_projects_real1.json';
+const PROJECT_ASSET_FILES = [
+    'Biomed.jpeg',
+    'Biomed1.jpeg',
+    'EconHis.jpg',
+    'Itali-america.webp',
+    'Jap.webp',
+    'Neurophotonics.jpeg'
+];
+const PROJECT_ASSET_BASE_PATH = './assets/';
+const resolvedProjectImages = new Map();
 let previewModalElements = null;
 let lastPreviewTrigger = null;
+let trendingAutoMinimizeSuspended = false;
+let lastTrendingIntersectionEntry = null;
+let trendingObserver = null;
+let trendingObserverTarget = null;
 
 // Utility function to fetch from API
 async function fetchAPI(endpoint, options = {}) {
@@ -1320,6 +1334,7 @@ export async function initProjectsPage() {
         }
 
         projects = await response.json();
+        assignProjectImages(projects);
         trending = selectTrendingProjects(projects);
     } catch (error) {
         console.error('Error loading projects:', error);
@@ -1395,6 +1410,106 @@ function selectTrendingProjects(projects) {
         .slice(0, 3);
 }
 
+function assignProjectImages(projects) {
+    resolvedProjectImages.clear();
+    if (!Array.isArray(projects) || !projects.length) return;
+
+    const descriptors = PROJECT_ASSET_FILES.map((file, index) => ({
+        file,
+        tokens: deriveAssetTokens(file),
+        used: false,
+        order: index
+    }));
+
+    const titleTokenCache = new Map();
+
+    projects.forEach((project) => {
+        const key = getProjectKey(project);
+        if (!key) return;
+
+        const title = (project.title || '').toString();
+        let titleTokens = titleTokenCache.get(title);
+        if (!titleTokens) {
+            titleTokens = getTitleTokens(title);
+            titleTokenCache.set(title, titleTokens);
+        }
+
+        let best = null;
+
+        descriptors.forEach((descriptor) => {
+            if (descriptor.used) return;
+            const score = scoreAssetMatch(descriptor.tokens, titleTokens);
+            if (!score) return;
+            if (
+                !best ||
+                score > best.score ||
+                (score === best.score && descriptor.tokens.length > best.descriptor.tokens.length)
+            ) {
+                best = { descriptor, score };
+            }
+        });
+
+        if (best) {
+            best.descriptor.used = true;
+            resolvedProjectImages.set(key, `${PROJECT_ASSET_BASE_PATH}${best.descriptor.file}`);
+        }
+    });
+}
+
+function getProjectBackgroundStyle(project) {
+    const assetPath = resolveProjectImagePath(project);
+    if (assetPath) {
+        return `url("${assetPath}") center/cover no-repeat`;
+    }
+    return buildGradient(project.image);
+}
+
+function resolveProjectImagePath(project) {
+    if (!project) return null;
+    const key = getProjectKey(project);
+    if (!key) return null;
+    return resolvedProjectImages.get(key) || null;
+}
+
+function getProjectKey(project) {
+    if (!project) return '';
+    const raw = project.code || project.id || project.title;
+    if (!raw) return '';
+    return raw.toString().toUpperCase();
+}
+
+function deriveAssetTokens(fileName) {
+    const base = fileName.replace(/\.[^.]+$/, '');
+    return base
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/[_\s-]+/g, ' ')
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .map((token) => token.replace(/\d+/g, ''))
+        .filter(Boolean);
+}
+
+function getTitleTokens(title) {
+    if (!title) return [];
+    return title
+        .toLowerCase()
+        .replace(/&/g, ' ')
+        .split(/[^a-z0-9]+/)
+        .filter(Boolean);
+}
+
+function scoreAssetMatch(assetTokens, titleTokens) {
+    if (!assetTokens.length || !titleTokens.length) return 0;
+    let score = 0;
+    assetTokens.forEach((token) => {
+        if (!token) return;
+        if (titleTokens.some((word) => word.startsWith(token))) {
+            score += 1;
+        }
+    });
+    return score;
+}
+
 function setTrendingMinimized(minimized) {
     const section = document.getElementById('projects-trending');
     const toggle = document.getElementById('trending-toggle');
@@ -1426,7 +1541,7 @@ function renderTrendingProjects(trendingProjects) {
 
         const art = document.createElement('div');
         art.className = 'trending-art';
-        art.style.background = buildGradient(project.image);
+        art.style.background = getProjectBackgroundStyle(project);
 
         const body = document.createElement('div');
         body.className = 'trending-body';
@@ -1444,7 +1559,6 @@ function renderTrendingProjects(trendingProjects) {
 
         card.addEventListener('click', () => {
             openProjectPreview(project);
-            setTrendingMinimized(true);
         });
 
         list.appendChild(card);
@@ -1468,6 +1582,8 @@ function wireTrendingInteractions() {
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
+                lastTrendingIntersectionEntry = entry;
+                if (trendingAutoMinimizeSuspended) return;
                 setTrendingMinimized(!entry.isIntersecting);
             });
         },
@@ -1477,7 +1593,8 @@ function wireTrendingInteractions() {
             rootMargin: '-120px 0px 0px 0px'
         }
     );
-
+    trendingObserver = observer;
+    trendingObserverTarget = controlsContainer;
     observer.observe(controlsContainer);
 }
 
@@ -1679,7 +1796,7 @@ function createProjectCard(project) {
 
     const image = document.createElement('div');
     image.className = 'project-image';
-    image.style.background = buildGradient(project.image);
+    image.style.background = getProjectBackgroundStyle(project);
 
     const badgeContainer = document.createElement('div');
     badgeContainer.className = 'project-badges';
@@ -1727,11 +1844,6 @@ function createProjectCard(project) {
     lead.className = 'project-lead';
     lead.textContent = formatLead(project.lead);
     content.appendChild(lead);
-
-    const summary = document.createElement('p');
-    summary.className = 'project-summary';
-    summary.textContent = project.summary;
-    content.appendChild(summary);
 
     const meta = document.createElement('div');
     meta.className = 'project-meta';
@@ -1978,6 +2090,13 @@ function wirePreviewModal(elements) {
             lastPreviewTrigger.focus();
         }
         lastPreviewTrigger = null;
+        trendingAutoMinimizeSuspended = false;
+        if (trendingObserver && trendingObserverTarget) {
+            trendingObserver.observe(trendingObserverTarget);
+        }
+        if (lastTrendingIntersectionEntry) {
+            setTrendingMinimized(!lastTrendingIntersectionEntry.isIntersecting);
+        }
     };
 
     elements.closeBtn?.addEventListener('click', closePreview);
@@ -1998,6 +2117,12 @@ function openProjectPreview(project) {
     if (active && typeof active.focus === 'function') {
         lastPreviewTrigger = active;
     }
+
+    trendingAutoMinimizeSuspended = true;
+    if (trendingObserver && trendingObserverTarget) {
+        trendingObserver.unobserve(trendingObserverTarget);
+    }
+    setTrendingMinimized(false);
 
     previewModalElements.title.textContent = project.title || 'Project Preview';
     previewModalElements.code.textContent = (project.code || project.id || '').toString().toUpperCase();
