@@ -1,60 +1,50 @@
-AI Research Collaboration Dashboard
-🏁 Overview
+# HiFive - AI Research Discovery Platform
 
-Project Name: AI Research Collaboration Dashboard
-Goal: Help researchers discover hot AI topics, visualize trends, and find collaborators through OpenAlex, Google Scholar, and Arxiv data.
-Mission: Build an interactive dashboard that combines:
+## Overview
 
-Word cloud of trending AI keywords
+**Project Name:** HiFive
+**Goal:** Help students and researchers discover personalized AI research topics, connect with relevant researchers, and explore projects through an interactive, AI-powered platform.
 
-Graph of active authors and institutions
+**Mission:** Guide users through a personalized journey of research discovery:
+1. **Assess** research interests through RSTI (Research Style & Topic Inventory) test
+2. **Discover** personalized topic recommendations based on assessment
+3. **Explore** research areas, people, and projects
+4. **Connect** through an AI chat assistant for deeper engagement
 
-Filtered researcher list (with links to Google Scholar / Arxiv)
+## User Journey
 
-Chat assistant ("Mascot Rhett") that suggests trending topics & collaborators
+### 1. Landing Page – RSTI Test
+- **RSTI (Research Style & Topic Inventory)** assessment to understand user interests
+- Interactive questionnaire that evaluates research preferences and topic alignment
+- Generates a personalized profile based on responses
 
-🧩 Core Features
-1. Home Page – Research Dashboard
+### 2. Personalized Recommendations
+- AI-powered topic recommendations based on RSTI test results
+- Curated research areas tailored to user's interests and academic background
+- Visual presentation of recommended research directions
 
-Wordcloud: generated from OpenAlex topics and recent hot papers.
+### 3. Research Exploration Hub
+Users can explore through multiple pages:
 
-Trending Graph: display topic frequency or citation trend over time.
+#### Research Page
+- Overview of AI research topics and trends
+- Interactive visualizations of hot topics
+- Wordcloud and trending graphs
 
-Data Source: OpenAlex API + Mock data (for offline mode).
+#### People Page
+- Discover researchers and potential collaborators
+- Filter by research interests, affiliation, and expertise
+- View researcher profiles with publications and projects
 
-2. People Page – Researcher & Collaborator Finder
+#### Projects Page
+- Browse current research projects
+- See project details, team members, and research focus
+- Visual cards showing project information and faculty involvement
 
-Search / Filter researchers by:
-
-Keyword or topic (e.g., “LLM”, “multimodal AI”)
-
-Affiliation / Institution
-
-Country / Year active
-
-Display Cards:
-
-Name → clickable link to Google Scholar or Arxiv
-
-Affiliation
-
-Research Interests (from OpenAlex)
-
-Collaborator Graph: simple network showing connections or co-authors.
-
-3. Chat Page – Mascot Rhett
-
-User Input: interest or query about hot research topics
-
-System Output:
-
-Summarize current research trend (via OpenAI API)
-
-Suggest top relevant researchers (via OpenAlex)
-
-Optional: Generate a narrative (“narrate” function) explaining why those people are relevant
-
-Tech: OpenAI API for chat, OpenAlex for data enrichment
+#### Chat Page
+- Interactive AI assistant for research questions
+- Ask about specific topics, researchers, or projects
+- Get personalized guidance based on your RSTI profile
 
 ⚙️ Tech Stack
 Layer	Technology
@@ -68,18 +58,17 @@ Optional	Google Scholar / Arxiv scraping (Mock for demo)
 ai-research-dashboard/
 │
 ├── frontend/
-│   ├── index.html              # Home page (dashboard)
-│   ├── people.html             # Researcher list & filter
-│   ├── chat.html               # Chat with Mascot Rhett
-│   ├── script.js               # Handles frontend logic
-│   ├── styles.css              # Styling
-│   ├── components/
-│   │   ├── wordcloud.js
-│   │   ├── chart.js
-│   │   ├── researcherCard.js
-│   │   └── chatBox.js
+│   ├── rsti.html               # Landing page - RSTI test
+│   ├── lootbox.html            # Personalized recommendations page
+│   ├── research.html           # Research topics and trends
+│   ├── people.html             # Researcher discovery & profiles
+│   ├── projects.html           # Research projects showcase
+│   ├── chat.html               # AI chat assistant
+│   ├── script.js               # Main frontend logic
+│   ├── styles.css              # Global styling
 │   └── assets/
-│       └── mascot.png
+│       ├── images/             # Project and researcher images
+│       └── icons/              # UI icons
 │
 ├── backend/
 │   ├── app.py                  # FastAPI/Flask main server
@@ -130,21 +119,22 @@ Returns:
   ]
 }
 
-🤖 Example Workflow
+## Example Workflow
 
-User visits Home Page → sees word cloud + trend graph
+1. **User arrives at Landing Page** → Takes RSTI test by answering questions about research interests and style
 
-User clicks on “AI Safety” → navigates to People Page with filtered researchers
+2. **Completion of RSTI** → Receives personalized topic recommendations based on test results
 
-User goes to Chat Page, types “I’m interested in multimodal AI”
+3. **User explores Research Page** → Views trending AI topics, word clouds, and research trends
 
-Mascot Rhett responds with:
+4. **User visits People Page** → Discovers researchers aligned with their interests, views profiles and expertise
 
-“Hot topic: Video-Language models and reasoning”
+5. **User browses Projects Page** → Explores current research projects and finds potential opportunities
 
-“Suggested collaborators: Alice Zhang (Google Scholar), Mark Liu (Arxiv)”
-
-“Would you like to visualize their network?”
+6. **User engages with Chat Page** → Asks questions like "Tell me more about multimodal AI" or "Who is working on reinforcement learning?"
+   - AI assistant responds with relevant information
+   - Suggests specific researchers and projects
+   - Provides personalized guidance based on RSTI profile
 
 🧠 Integration Notes
 
@@ -156,25 +146,28 @@ Mock Mode: If no API key, load local mock JSON instead
 
 Frontend visualization: Use D3.js for graphs, WordCloud2.js for topic cloud
 
-🐾 Mascot Rhett (Chat Assistant)
+## AI Chat Assistant
 
-Personality: Friendly research helper.
-Goal: Help users understand research trends and connect to people.
-Example Output:
+**Personality:** Friendly, knowledgeable research guide
+**Goal:** Help users understand research trends, discover relevant researchers and projects, and provide personalized guidance based on RSTI profile
 
-“Hey! Based on your interest in reinforcement learning, I found that the trend is moving toward large-scale agent coordination. You might want to connect with Dr. Li Wei (Stanford) or Prof. Smith (CMU).”
+**Example Interactions:**
 
-🚀 Future Add-ons
+User: "What research areas match my interests?"
+Assistant: "Based on your RSTI profile showing interest in applied AI and human-computer interaction, you might enjoy exploring projects in multimodal learning and AI accessibility. Check out Dr. Smith's work on the People page!"
 
-Add login + personal research notebook
+User: "Tell me about reinforcement learning"
+Assistant: "Reinforcement learning is trending toward large-scale agent coordination and real-world applications. I found several researchers and projects in this area - would you like me to suggest some?"
 
-Real-time collaboration via Firebase
+## Future Enhancements
 
-Integration with Google Scholar API
-
-Network visualization (co-author graph)
-
-PDF summarization via OpenAI API
+- **User Profiles:** Save RSTI results and track exploration history
+- **Advanced Matching:** ML-based researcher-project matching algorithm
+- **Collaboration Features:** Direct messaging and connection requests
+- **Enhanced Visualizations:** Interactive co-author networks and research topic maps
+- **Integration Expansions:** Google Scholar API, Arxiv, and university research databases
+- **PDF Analysis:** Automatic paper summarization and key insight extraction
+- **Personalized Dashboard:** Custom feeds based on research interests and RSTI profile
 
 🧪 Mock Data Example
 
