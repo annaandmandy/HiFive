@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Loot Box - Idea Capsules</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="lootbox.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">AI Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="people.html">Researchers</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container lootbox-container">
+        <section class="hero lootbox-hero">
+            <h2>Research Idea Capsules</h2>
+            <p>Unlock mystery papers and discover surprising research gems!</p>
+            <div class="mascot-message">
+                <span class="mascot-icon">🐕</span>
+                <p>"Woof! Press that button and let's see what research treasures we dig up today!"</p>
+            </div>
+        </section>
+
+        <section class="lootbox-controls">
+            <button id="openLootboxBtn" class="lootbox-button">
+                <span class="btn-icon">🎁</span>
+                <span class="btn-text">Open Mystery Capsule</span>
+                <span class="btn-sparkle">✨</span>
+            </button>
+        </section>
+
+        <section id="cardsContainer" class="cards-container">
+            <!-- Cards will be dynamically inserted here -->
+        </section>
+
+        <section id="loadingState" class="loading-state" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Opening your mystery capsule...</p>
+        </section>
+
+        <section class="rarity-legend">
+            <h3>Rarity Guide</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-badge ssr">SSR</div>
+                    <p>Legendary (5000+ citations)</p>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-badge sr">SR</div>
+                    <p>Epic (1000-5000 citations)</p>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-badge r">R</div>
+                    <p>Rare (200-1000 citations)</p>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-badge n">N</div>
+                    <p>Common (<200 citations)</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script src="lootbox.js"></script>
+</body>
+</html>

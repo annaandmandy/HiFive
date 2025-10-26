@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Research Dashboard - Researchers</title>
+    <title>Research Dashboard - Researchers</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="people_bubble.css">
+    <!-- D3.js for bubble chart -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <h1 class="logo">AI Research Dashboard</h1>
+            <h1 class="logo">Research Dashboard</h1>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="people.html" class="active">Researchers</a></li>
+                <li><a href="projects.html">Projects</a></li>
                 <li><a href="chat.html">Chat with Rhett</a></li>
             </ul>
         </div>
@@ -22,6 +26,42 @@
         <section class="hero">
             <h2>Find AI Researchers & Collaborators</h2>
             <p>Search and filter researchers by topic, institution, or country</p>
+        </section>
+
+        <!-- View Toggle -->
+        <div class="view-toggle">
+            <button id="grid-view-btn" class="btn btn-primary">Grid View</button>
+            <button id="bubble-view-btn" class="btn btn-secondary">Bubble Chart</button>
+        </div>
+
+        <!-- Bubble Chart Section (Initially Hidden) -->
+        <section id="bubble-section" class="bubble-container" style="display: none;">
+            <!-- Topic Input -->
+            <div id="topic-prompt" class="topic-prompt">
+                <input id="topic-input" placeholder="Enter research topic (e.g., AI, Machine Learning, Computer Vision)..." />
+                <button id="topic-submit" class="btn btn-primary">Show Network</button>
+            </div>
+
+            <!-- Controls -->
+            <div id="controls" class="bubble-controls" style="display: none;">
+                <button id="back-btn" class="btn btn-secondary">Back</button>
+                <span id="current-topic" class="current-topic"></span>
+                <span id="node-count" style="color:var(--text-secondary)"></span>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="loading" style="display:none;">
+                <div class="loader"></div>
+                <div class="loading-text">Loading researchers…</div>
+            </div>
+
+            <!-- Visualization -->
+            <div id="viz-container" class="viz-container" style="display: none;">
+                <svg id="bubble-svg"></svg>
+            </div>
+
+            <!-- Message -->
+            <div id="message" class="bubble-message" style="display:none;"></div>
         </section>
 
         <!-- Search & Filter Section -->
@@ -87,7 +127,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 AI Research Dashboard | Powered by OpenAlex & OpenAI</p>
+        <p>&copy; 2025 Research Dashboard | Powered by OpenAlex & OpenAI</p>
     </footer>
 
     <script type="module" src="script.js"></script>
@@ -95,5 +135,8 @@
         import { initPeoplePage } from './script.js';
         initPeoplePage();
     </script>
+
+    <!-- Bubble Chart Script -->
+    <script src="bubble_chart.js"></script>
 </body>
 </html>

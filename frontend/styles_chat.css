@@ -8,8 +8,27 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0;
+    padding-right: 0; /* Will be adjusted when sidebar is active */
     position: relative;
     background-color: #fafafa;
+    transition: padding-right 0.3s ease;
+}
+
+/* Add padding when sidebar is active to prevent overlap */
+.chat-main.sidebar-active {
+    padding-right: 350px;
+}
+
+@media (max-width: 1024px) {
+    .chat-main.sidebar-active {
+        padding-right: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .chat-main.sidebar-active {
+        padding-right: 0; /* On mobile, sidebar overlays */
+    }
 }
 
 /* ===== Welcome Screen with Big Rhett ===== */
@@ -402,6 +421,58 @@
     transform: translateX(0);
 }
 
+/* Reopen Sidebar Button */
+.reopen-sidebar-btn {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.reopen-sidebar-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.reopen-sidebar-btn:active {
+    transform: scale(1.05);
+}
+
+.reopen-sidebar-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.reopen-sidebar-btn .researcher-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
 .sidebar-header {
     padding: 1.5rem;
     border-bottom: 1px solid var(--border-color);
@@ -451,11 +522,18 @@
     margin-bottom: 1rem;
     border: 2px solid transparent;
     transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
 }
 
 .researcher-mini-card:hover {
     border-color: var(--primary-color);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateX(-2px);
+}
+
+.researcher-mini-card:active {
+    transform: translateX(-1px);
 }
 
 .researcher-mini-card h4 {
@@ -480,6 +558,16 @@
     margin-top: 0.75rem;
     width: 100%;
     justify-content: center;
+    pointer-events: none; /* Disable button so card click works */
+}
+
+.researcher-mini-card .researcher-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 }
 
 /* ===== Responsive Design ===== */
@@ -586,4 +674,32 @@
 .example-chip:focus-visible {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+}
+
+.papers-list {
+    margin-top: 10px;
+    background: #fff6eb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.papers-list h4 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+}
+
+.papers-list ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.papers-list a {
+    color: #0077cc;
+    text-decoration: none;
+}
+
+.papers-list a:hover {
+    text-decoration: underline;
 }

@@ -1,0 +1,209 @@
+[
+  {
+    "id": "proj-001",
+    "title": "Neural Ethics Observatory",
+    "launchType": "project",
+    "topic": "Artificial Intelligence",
+    "summary": "Building an interactive dashboard to monitor ethical compliance of LLM deployments across the university.",
+    "lead": {
+      "name": "Amelia Chen",
+      "role": "Graduate Research Fellow",
+      "leadType": "student-led"
+    },
+    "stage": "in-progress",
+    "fundingStatus": "partial",
+    "fundingNeeded": 12000,
+    "requirementLevel": "high",
+    "location": "on-campus",
+    "mode": "offline",
+    "teamSize": 6,
+    "updated": "2025-02-11",
+    "tags": [
+      "AI Safety",
+      "Governance",
+      "Visualization"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "135deg",
+      "colors": [
+        "#3b82f6",
+        "#8b5cf6"
+      ]
+    },
+    "code": "UROP-0001",
+    "managerMessage": "We're focusing on ethical guardrails for our LLM deployments\u2014looking for collaborators with visualization expertise."
+  },
+  {
+    "id": "proj-002",
+    "title": "Community Health NLP Study",
+    "launchType": "project",
+    "topic": "Public Health",
+    "summary": "Analyzing community clinic transcripts to extract trends in preventative care adoption.",
+    "lead": {
+      "name": "Dr. Priya Rao",
+      "role": "Assistant Professor, School of Public Health",
+      "leadType": "professor-led"
+    },
+    "stage": "in-progress",
+    "fundingStatus": "secured",
+    "fundingNeeded": 0,
+    "requirementLevel": "medium",
+    "location": "off-campus",
+    "mode": "hybrid",
+    "teamSize": 4,
+    "updated": "2025-01-28",
+    "tags": [
+      "Healthcare AI",
+      "Natural Language Processing"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "120deg",
+      "colors": [
+        "#14b8a6",
+        "#0ea5e9"
+      ]
+    },
+    "code": "ROP-0002",
+    "managerMessage": "Excited to share early findings with the community; feedback on NLP labeling workflows is especially welcome."
+  },
+  {
+    "id": "proj-003",
+    "title": "Sustainable Campus Robotics",
+    "launchType": "project",
+    "topic": "Engineering",
+    "summary": "Designing autonomous delivery rovers optimized for low-energy campus logistics.",
+    "lead": {
+      "name": "Miguel Alvarez",
+      "role": "Undergraduate Robotics Lead",
+      "leadType": "student-led"
+    },
+    "stage": "proposal",
+    "fundingStatus": "seeking",
+    "fundingNeeded": 8500,
+    "requirementLevel": "medium",
+    "location": "on-campus",
+    "mode": "offline",
+    "teamSize": 5,
+    "updated": "2025-02-03",
+    "tags": [
+      "Robotics",
+      "Sustainability"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "145deg",
+      "colors": [
+        "#f59e0b",
+        "#ef4444"
+      ]
+    },
+    "code": "UROP-0003",
+    "managerMessage": "Prototype rovers are ready for testing\u2014join us if you're into robotics hardware or sustainability modeling."
+  },
+  {
+    "id": "proj-004",
+    "title": "Cross-Lingual Education Analytics",
+    "launchType": "project",
+    "topic": "Education",
+    "summary": "Evaluating multilingual tutoring agents for equitable STEM learning outcomes.",
+    "lead": {
+      "name": "Professor Lena Hoffmann",
+      "role": "Chair, Learning Sciences Lab",
+      "leadType": "professor-led"
+    },
+    "stage": "published",
+    "fundingStatus": "secured",
+    "fundingNeeded": 0,
+    "requirementLevel": "low",
+    "location": "on-campus",
+    "mode": "online",
+    "teamSize": 3,
+    "updated": "2024-12-12",
+    "tags": [
+      "Language Technology",
+      "STEM Education"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "160deg",
+      "colors": [
+        "#6366f1",
+        "#ec4899"
+      ]
+    },
+    "code": "ROP-0004",
+    "managerMessage": "We\u2019re wrapping up the final evaluation phase and would love reviewers from multilingual education programs."
+  },
+  {
+    "id": "proj-005",
+    "title": "Urban Climate Vision Lab",
+    "launchType": "project",
+    "topic": "Data Sciences",
+    "summary": "Creating a computer vision pipeline to track urban microclimate changes from satellite imagery.",
+    "lead": {
+      "name": "Karina Osei",
+      "role": "Data Science Fellow",
+      "leadType": "collaborative"
+    },
+    "stage": "in-progress",
+    "fundingStatus": "partial",
+    "fundingNeeded": 15000,
+    "requirementLevel": "high",
+    "location": "off-campus",
+    "mode": "hybrid",
+    "teamSize": 7,
+    "updated": "2025-02-06",
+    "tags": [
+      "Climate",
+      "Computer Vision"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "110deg",
+      "colors": [
+        "#0f172a",
+        "#1d4ed8",
+        "#22d3ee"
+      ]
+    },
+    "code": "UROP-0005",
+    "managerMessage": "Satellite imagery ingestion is scaling fast; seeking partners for urban climate policy translation."
+  },
+  {
+    "id": "proj-006",
+    "title": "Biomedical Sensor Playground",
+    "launchType": "project",
+    "topic": "Biomedical",
+    "summary": "Developing open-source wearable sensors to monitor rehabilitation progress in real time.",
+    "lead": {
+      "name": "Jasmine Patel",
+      "role": "Masters Candidate, Biomedical Engineering",
+      "leadType": "student-led"
+    },
+    "stage": "pilot",
+    "fundingStatus": "seeking",
+    "fundingNeeded": 6200,
+    "requirementLevel": "medium",
+    "location": "on-campus",
+    "mode": "offline",
+    "teamSize": 4,
+    "updated": "2025-01-20",
+    "tags": [
+      "Wearables",
+      "Rehabilitation"
+    ],
+    "image": {
+      "type": "gradient",
+      "direction": "140deg",
+      "colors": [
+        "#22c55e",
+        "#16a34a",
+        "#2dd4bf"
+      ]
+    },
+    "code": "ROP-0006",
+    "managerMessage": "Wearable sensor prototypes need beta testers\u2014physio students encouraged to reach out!"
+  }
+]
