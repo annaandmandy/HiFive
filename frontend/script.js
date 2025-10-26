@@ -1895,7 +1895,7 @@ function createProjectCard(project) {
 
 function buildGradient(image) {
     if (!image || image.type !== 'gradient' || !Array.isArray(image.colors) || !image.colors.length) {
-        return 'linear-gradient(135deg, #3b82f6, #8b5cf6)';
+        return 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
     }
 
     const direction = image.direction || '135deg';
@@ -1903,7 +1903,7 @@ function buildGradient(image) {
 }
 
 function extractPrimaryColor(image) {
-    if (!image) return 'rgba(59, 130, 246, 0.35)';
+    if (!image) return 'rgba(204, 0, 0, 0.35)';
     if (Array.isArray(image.colors) && image.colors.length > 0) {
         return hexToRgba(image.colors[0], 0.45);
     }
@@ -1911,12 +1911,12 @@ function extractPrimaryColor(image) {
         const match = image.match(/#([0-9a-fA-F]{6})/);
         if (match) return hexToRgba(`#${match[1]}`, 0.45);
     }
-    return 'rgba(59, 130, 246, 0.35)';
+    return 'rgba(204, 0, 0, 0.35)';
 }
 
 function hexToRgba(hex, alpha = 1) {
     const normalized = hex.replace('#', '');
-    if (normalized.length !== 6) return `rgba(59, 130, 246, ${alpha})`;
+    if (normalized.length !== 6) return `rgba(204, 0, 0, ${alpha})`;
     const bigint = parseInt(normalized, 16);
     const r = (bigint >> 16) & 255;
     const g = (bigint >> 8) & 255;

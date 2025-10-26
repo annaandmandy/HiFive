@@ -27,8 +27,8 @@
       "type": "gradient",
       "direction": "135deg",
       "colors": [
-        "#3b82f6",
-        "#8b5cf6"
+        "#cc0000",
+        "#7d0000"
       ]
     },
     "code": "UROP-0001",
@@ -61,8 +61,8 @@
       "type": "gradient",
       "direction": "120deg",
       "colors": [
-        "#14b8a6",
-        "#0ea5e9"
+        "#d4af37",
+        "#e55353"
       ]
     },
     "code": "ROP-0002",
@@ -129,7 +129,7 @@
       "type": "gradient",
       "direction": "160deg",
       "colors": [
-        "#6366f1",
+        "#b22222",
         "#ec4899"
       ]
     },
@@ -163,9 +163,9 @@
       "type": "gradient",
       "direction": "110deg",
       "colors": [
-        "#0f172a",
-        "#1d4ed8",
-        "#22d3ee"
+        "#500000",
+        "#8b0000",
+        "#ffb3b3"
       ]
     },
     "code": "UROP-0005",

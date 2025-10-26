@@ -29,9 +29,9 @@
 }
 
 .projects-trending {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(139, 92, 246, 0.08));
+    background: linear-gradient(135deg, rgba(204, 0, 0, 0.08), rgba(212, 175, 55, 0.08));
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(204, 0, 0, 0.2);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -40,7 +40,7 @@
 }
 
 .projects-trending:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.12));
+    background: linear-gradient(135deg, rgba(204, 0, 0, 0.12), rgba(212, 175, 55, 0.12));
     box-shadow: var(--shadow-md);
 }
 
@@ -117,7 +117,7 @@
 }
 
 .trending-card:focus-visible {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.35);
 }
 
 .trending-card .trending-body {
@@ -221,7 +221,7 @@
 .projects-search input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.15);
 }
 
 .search-actions {
@@ -429,7 +429,7 @@
 .project-card:hover,
 .project-card:focus-within {
     transform: translateY(-6px);
-    box-shadow: 0 18px 28px var(--project-hover-shadow, rgba(59, 130, 246, 0.25));
+    box-shadow: 0 18px 28px var(--project-hover-shadow, rgba(204, 0, 0, 0.25));
 }
 
 .project-image {
@@ -481,7 +481,7 @@
     justify-content: center;
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
-    background: rgba(59, 130, 246, 0.12);
+    background: rgba(204, 0, 0, 0.12);
     color: var(--primary-color);
     font-size: 0.8rem;
     font-weight: 700;
@@ -552,11 +552,11 @@
 }
 
 .badge-launch.launch-research {
-    background: rgba(30, 64, 175, 0.8);
+    background: rgba(139, 0, 0, 0.8);
 }
 
 .badge-launch.launch-lab {
-    background: rgba(14, 165, 233, 0.85);
+    background: rgba(42, 157, 143, 0.85);
 }
 
 .badge-stage {
@@ -569,23 +569,23 @@
 }
 
 .badge-stage.stage-in-progress {
-    color: #2563eb;
+    color: #CC0000;
 }
 
 .badge-stage.stage-pilot {
-    color: #0ea5e9;
+    color: #2A9D8F;
 }
 
 .badge-stage.stage-finished {
-    color: #16a34a;
+    color: #2A9D8F;
 }
 
 .badge-stage.stage-published {
-    color: #9333ea;
+    color: #D4AF37;
 }
 
 .badge-stage.stage-concluded {
-    color: #f97316;
+    color: #E76F51;
 }
 
 .project-card .tag {

@@ -6,19 +6,21 @@
 }
 
 :root {
-    --primary-color: #3b82f6;
-    --secondary-color: #8b5cf6;
-    --success-color: #10b981;
-    --danger-color: #ef4444;
-    --warning-color: #f59e0b;
-    --dark-color: #1f2937;
-    --light-color: #f3f4f6;
-    --border-color: #e5e7eb;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* Boston University Scarlet Red Theme */
+    --primary-color: #c63131;           /* BU Scarlet Red */
+    --primary-hover: #d21818;           /* Deep Scarlet - hover states */
+    --secondary-color: #d6513f;         /* Gold - complementary accent */
+    --success-color: #2A9D8F;           /* Teal - success states */
+    --danger-color: #CC0000;            /* Scarlet - error states */
+    --warning-color: #E76F51;           /* Coral orange - warnings */
+    --dark-color: #2B2D42;              /* Charcoal - headings */
+    --light-color: #EDF2F4;             /* Cream - light backgrounds */
+    --border-color: #D4D8DD;            /* Light gray - borders */
+    --text-primary: #2B2D42;            /* Charcoal - main text */
+    --text-secondary: #8D99AE;          /* Warm gray - secondary text */
+    --shadow-sm: 0 1px 2px 0 rgba(204, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px -1px rgba(204, 0, 0, 0.15);
+    --shadow-lg: 0 10px 15px -3px rgba(204, 0, 0, 0.2);
     --radius: 8px;
     --radius-lg: 12px;
 }
@@ -241,7 +243,7 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #2563eb;
+    background-color: var(--primary-hover);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }

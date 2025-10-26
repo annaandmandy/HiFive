@@ -56,7 +56,7 @@
 .topic-prompt input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.12);
 }
 
 .topic-prompt .btn {
@@ -87,7 +87,7 @@
     width: 100%;
     overflow: hidden;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    background: linear-gradient(135deg, #fff1f2 0%, #ffe0e0 100%);
 }
 
 #bubble-svg {
@@ -106,11 +106,11 @@
 }
 
 .main-node .node-circle {
-    filter: drop-shadow(0 4px 12px rgba(59, 130, 246, 0.4));
+    filter: drop-shadow(0 4px 12px rgba(204, 0, 0, 0.4));
 }
 
 .sub-node .node-circle {
-    filter: drop-shadow(0 2px 6px rgba(59, 130, 246, 0.2));
+    filter: drop-shadow(0 2px 6px rgba(204, 0, 0, 0.2));
 }
 
 .node-label {
@@ -144,7 +144,7 @@
     font-size: 1.05rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #60a5fa;
+    color: var(--primary-color);
 }
 
 .bubble-tooltip .tt-topics {

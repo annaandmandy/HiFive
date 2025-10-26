@@ -9,7 +9,7 @@
     const MAX_VISIBLE = 15; // Maximum nodes to display
     const HEIGHT = 640;
     const COLOR = getComputedStyle(document.documentElement)
-        .getPropertyValue('--primary-color')?.trim() || '#3b82f6';
+        .getPropertyValue('--primary-color')?.trim() || '#cc0000';
 
     // ========================================
     // DOM Elements
@@ -216,7 +216,7 @@
             .data(links)
             .enter()
             .append('line')
-            .attr('stroke', '#e6eef7')
+            .attr('stroke', '#f8d7da')
             .attr('stroke-width', 1.5)
             .attr('opacity', 0.9);
 

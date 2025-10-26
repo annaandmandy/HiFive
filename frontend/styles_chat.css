@@ -62,7 +62,7 @@
     object-fit: contain;
     margin-bottom: 2rem;
     animation: floatIn 0.8s ease-out;
-    filter: drop-shadow(0 10px 30px rgba(59, 130, 246, 0.2));
+    filter: drop-shadow(0 10px 30px rgba(204, 0, 0, 0.2));
 }
 
 @keyframes floatIn {
@@ -122,7 +122,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 2px 8px rgba(204, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
 }
@@ -131,7 +131,7 @@
     background: var(--primary-color);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 4px 12px rgba(204, 0, 0, 0.25);
 }
 
 .example-chip:active {
@@ -230,7 +230,7 @@
 }
 
 .bot-message .message-avatar {
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    background: linear-gradient(135deg, #FFE8E8, #FFCCCC);
     border: 2px solid var(--primary-color);
 }
 
@@ -259,7 +259,7 @@
 
 .bot-message .message-content {
     border-bottom-left-radius: 4px;
-    border: 1px solid #e0f2fe;
+    border: 1px solid #FFCCCC;
 }
 
 .user-message .message-content {
@@ -363,7 +363,7 @@
     outline: none;
     border-color: var(--primary-color);
     background: white;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.1);
 }
 
 .send-btn {
@@ -379,7 +379,7 @@
 
 .send-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(204, 0, 0, 0.3);
 }
 
 .send-btn:active {
@@ -432,7 +432,7 @@
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border: none;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(204, 0, 0, 0.3);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -444,7 +444,7 @@
 
 .reopen-sidebar-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px rgba(204, 0, 0, 0.4);
 }
 
 .reopen-sidebar-btn:active {
@@ -528,7 +528,7 @@
 
 .researcher-mini-card:hover {
     border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 12px rgba(204, 0, 0, 0.15);
     transform: translateX(-2px);
 }
 
@@ -678,7 +678,7 @@
 
 .papers-list {
     margin-top: 10px;
-    background: #fff6eb;
+    background: #FFF5E6;
     border-radius: 8px;
     padding: 10px 12px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
@@ -696,7 +696,7 @@
 }
 
 .papers-list a {
-    color: #0077cc;
+    color: var(--primary-color);
     text-decoration: none;
 }
 
