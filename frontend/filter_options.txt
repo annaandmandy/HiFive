@@ -1,0 +1,82 @@
+Filter: Topic
+  value=' ' label='All Topics')
+  value='african-american-studies' label='African American Studies')
+  value='american-studies' label='American Studies')
+  value='anatomy' label='Anatomy')
+  value='artificial-intelligence' label='Artificial Intelligence')
+  value='biochemistry' label='Biochemistry')
+  value='biology' label='Biology')
+  value='biomedical' label='Biomedical')
+  value='business' label='Business')
+  value='communications' label='Communications')
+  value='computer-science' label='Computer Science')
+  value='data-sciences' label='Data Sciences')
+  value='economics' label='Economics')
+  value='education' label='Education')
+  value='engineering' label='Engineering')
+  value='health' label='Health')
+  value='higher-education' label='Higher Education')
+  value='history' label='History')
+  value='hospitality' label='Hospitality')
+  value='humanities' label='Humanities')
+  value='immunology' label='Immunology')
+  value='japanese-language' label='Japanese Language')
+  value='linguistics-language-sciences' label='Linguistics &amp; Language Sciences')
+  value='literature' label='Literature')
+  value='mathematics' label='Mathematics')
+  value='medicine' label='Medicine')
+  value='neuroscience' label='Neuroscience')
+  value='ophthalmology' label='Ophthalmology')
+  value='pediatrics' label='Pediatrics')
+  value='pharmacology' label='Pharmacology')
+  value='physical-therapy' label='Physical Therapy')
+  value='political-science' label='Political Science')
+  value='psychology' label='Psychology')
+  value='public-health' label='Public Health')
+  value='social-science' label='Social Science')
+  value='sociology' label='Sociology')
+  value='speech-language-hearing-sciences' label='Speech, Language, and Hearing Sciences')
+
+Filter: Stage
+  value=' ' label='Any')
+  value='proposal' label='Proposal')
+  value='in-progress' label='In Progress')
+  value='pilot' label='Pilot Study')
+  value='finished' label='Finished')
+  value='published' label='Published')
+
+Filter: Launch
+  value=' ' label='Any Type')
+  value='project' label='Project')
+  value='research' label='Research')
+  value='lab' label='Lab')
+
+Filter: Lead
+  value=' ' label='Any Lead')
+  value='student-led' label='Student-led')
+  value='professor-led' label='Professor-led')
+  value='collaborative' label='Student &amp; Professor Collaboration')
+  value='other' label='Other')
+
+Filter: Location
+  value=' ' label='Any Location')
+  value='on-campus' label='On Campus')
+  value='off-campus' label='Off Campus')
+
+Filter: Mode
+  value=' ' label='Any Mode')
+  value='online' label='Online')
+  value='offline' label='Offline')
+  value='hybrid' label='Hybrid')
+
+Filter: Funding
+  value=' ' label='Any Status')
+  value='seeking' label='Seeking Funding')
+  value='partial' label='Partially Funded')
+  value='secured' label='Funding Secured')
+
+Filter: Requirements
+  value=' ' label='Any Level')
+  value='low' label='Low')
+  value='medium' label='Moderate')
+  value='high' label='High')
