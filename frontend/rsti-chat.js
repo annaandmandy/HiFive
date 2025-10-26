@@ -98,6 +98,8 @@ async function promptForMajor() {
             const value = input.value.trim();
             if (value) {
                 document.body.removeChild(modal);
+                // Save major to localStorage
+                localStorage.setItem('USER_MAJOR', value);
                 resolve(value);
             }
         };
