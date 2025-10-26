@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Path Generator - Research Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .lifepath-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .lifepath-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s;
+        }
+
+        .back-button:hover {
+            color: var(--secondary-color);
+        }
+
+        .lifepath-title {
+            font-size: 2.5rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .lifepath-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #4A90E2;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4A90E2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--radius);
+            border: 2px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result-content {
+            color: var(--dark-color);
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+
+        .result-content h1,
+        .result-content h2,
+        .result-content h3 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .result-content h1 {
+            font-size: 1.9rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+        }
+
+        .result-content h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-content h3 {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-content p {
+            margin-bottom: 15px;
+        }
+
+        .result-content code {
+            background: #f4f4f4;
+            color: #333;
+            padding: 12px 15px;
+            border-radius: 6px;
+            display: block;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border-left: 3px solid #4A90E2;
+        }
+
+        .result-content ul,
+        .result-content ol {
+            margin-left: 25px;
+            margin-top: 12px;
+            margin-bottom: 15px;
+        }
+
+        .result-content li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .result-content blockquote {
+            border-left: 4px solid #4A90E2;
+            padding-left: 20px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #555;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .result-content strong {
+            color: #2E5C8A;
+            font-weight: 600;
+        }
+
+        .result-content hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 30px 0;
+        }
+
+        .error {
+            display: none;
+            padding: 1rem;
+            background: #fee;
+            border-left: 5px solid #f44336;
+            border-radius: var(--radius);
+            color: #c33;
+            margin-top: 1.5rem;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .copy-button {
+            width: auto;
+            padding: 0.65rem 1.5rem;
+            margin-top: 1rem;
+            background: #28a745;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: var(--radius);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .copy-button:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 768px) {
+            .lifepath-container {
+                padding: 1rem;
+            }
+
+            .lifepath-title {
+                font-size: 2rem;
+            }
+
+            .lifepath-subtitle {
+                font-size: 1rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Research Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="research.html">Research Trends</a></li>
+                <li><a href="people.html">Researchers</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="chat.html">Chat with Rhett</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container lifepath-container">
+        <a href="index.html" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 18l-8-8 8-8 1.4 1.4L5.8 9H18v2H5.8l5.6 5.6L10 18z"/>
+            </svg>
+            Back to Home
+        </a>
+
+        <div class="lifepath-header">
+            <h1 class="lifepath-title">🎮 Life Path Generator</h1>
+            <p class="lifepath-subtitle">Discover your unique journey through academia, industry, or entrepreneurship</p>
+        </div>
+
+        <form id="pathForm" class="form-section">
+            <!-- <div class="form-group">
+                <label for="apiKey">OpenAI API Key *</label>
+                <input type="password" id="apiKey" placeholder="sk-..." required>
+            </div> -->
+
+            <div class="form-group">
+                <label for="school">University/School *</label>
+                <input type="text" id="school" placeholder="e.g., Boston University, MIT, Stanford" required>
+            </div>
+
+            <div class="form-group">
+                <label for="major">Major/Field of Study *</label>
+                <input type="text" id="major" placeholder="e.g., Reinforcement Learning, Computer Vision, NLP" required>
+            </div>
+
+            <div class="form-group">
+                <label for="degree">Degree *</label>
+                <select id="degree" required>
+                    <option value="">Select your degree...</option>
+                    <option value="PhD">PhD</option>
+                    <option value="Master's">Master's</option>
+                    <option value="Undergraduate">Undergraduate</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Career Path Interest *</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="academic" name="path" value="academic" required>
+                        <label for="academic">🎓 Academic</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="industry" name="path" value="industry">
+                        <label for="industry">💼 Industry</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="startup" name="path" value="startup">
+                        <label for="startup">🚀 Startup/Entrepreneurship</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="random" name="path" value="random" checked>
+                        <label for="random">🎲 Surprise Me!</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="personality">Personality & Interests (Optional)</label>
+                <textarea id="personality" placeholder="e.g., Love building things from scratch, prefer hands-on work, enjoy collaboration, risk-taker, value work-life balance..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="goals">Life Goals & Values (Optional)</label>
+                <textarea id="goals" placeholder="e.g., Want to make real-world impact, financial freedom, intellectual freedom, train next generation, change an industry..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="specialNotes">Additional Context (Optional)</label>
+                <textarea id="specialNotes" placeholder="Any specific interests, concerns, or things you want the story to address..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">✨ Generate My Life Path</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Crafting your unique life path story... This may take 30-60 seconds ⏳</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="result" id="result">
+            <button class="copy-button" onclick="copyResult()">📋 Copy to Clipboard</button>
+            <div class="result-content" id="resultContent"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Research Dashboard | Powered by OpenAlex & OpenAI</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('pathForm');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const resultContent = document.getElementById('resultContent');
+        const errorDiv = document.getElementById('error');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const school = document.getElementById('school').value.trim();
+            const major = document.getElementById('major').value.trim();
+            const degree = document.getElementById('degree').value;
+            const pathPreference = document.querySelector('input[name="path"]:checked').value;
+            const personality = document.getElementById('personality').value.trim();
+            const goals = document.getElementById('goals').value.trim();
+            const specialNotes = document.getElementById('specialNotes').value.trim();
+
+            // Hide previous results and errors
+            result.classList.remove('active');
+            errorDiv.classList.remove('active');
+            loading.classList.add('active');
+
+            try {
+                const story = await generateLifePath({
+                    school,
+                    major,
+                    degree,
+                    pathPreference,
+                    personality,
+                    goals,
+                    specialNotes
+                });
+
+                // Display result
+                resultContent.innerHTML = formatMarkdown(story);
+                result.classList.add('active');
+                loading.classList.remove('active');
+
+                // Scroll to result
+                result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                loading.classList.remove('active');
+                errorDiv.textContent = `Error: ${error.message}`;
+                errorDiv.classList.add('active');
+            }
+        });
+
+        async function generateLifePath(data) {
+            const { school, major, degree, pathPreference, personality, goals, specialNotes } = data;
+
+            // Call backend API instead of OpenAI directly
+            const response = await fetch('http://localhost:8000/api/lifepath', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    school,
+                    major,
+                    degree,
+                    pathPreference,
+                    personality,
+                    goals,
+                    specialNotes
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to generate life path');
+            }
+
+            const responseData = await response.json();
+            return responseData.story;
+        }
+
+
+        function formatMarkdown(text) {
+            // Basic markdown to HTML conversion
+            let html = text;
+
+            // Code blocks (before other processing)
+            html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<code>$2</code>');
+
+            // Headers (must be at start of line)
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+            // Horizontal rules
+            html = html.replace(/^---$/gim, '<hr>');
+
+            // Bold and italic
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Blockquotes
+            html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+            // Lists - unordered
+            html = html.replace(/^\- (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+            
+            // Wrap consecutive list items in ul
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+
+            // Ordered lists
+            html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                if (!match.includes('<ul>')) {
+                    return '<ol>' + match + '</ol>';
+                }
+                return match;
+            });
+
+            // Paragraphs - convert double line breaks to paragraph breaks
+            html = html.split('\n\n').map(para => {
+                para = para.trim();
+                // Don't wrap if it's already a heading, list, code block, etc.
+                if (para && !para.match(/^<(h\d|ul|ol|blockquote|code|hr)/)) {
+                    return '<p>' + para.replace(/\n/g, '<br>') + '</p>';
+                }
+                return para;
+            }).join('\n');
+
+            return html;
+        }
+
+        function copyResult() {
+            const text = resultContent.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
